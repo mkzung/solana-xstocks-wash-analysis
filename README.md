@@ -38,9 +38,9 @@ seed matches on-chain to the cent). The account-owner snapshot is committed in
 It is the **pool, not the token**: QQQX is flagged in one Raydium pool and clean in another;
 TSLAX is flagged on Orca and clean on Raydium. In the measured windows the bots round-tripped
 **$467k** of self-cancelling buy-and-sell (a hard, directly-observed floor). A 24h figure is an
-extrapolation and the two natural methods disagree by an order of magnitude (**$32M-$102M/day**
-across the five pools, assuming the snapshot behaviour persists); the floor and the per-pool
-shares are the claims to rely on. Following the fourteen named wallets through their **full
+extrapolation and the two natural methods disagree by about threefold in aggregate (**$32M-$102M/day**
+across the five pools, and by an order of magnitude pool by pool, assuming the snapshot behaviour
+persists); the floor and the per-pool shares are the claims to rely on. Following the fourteen named wallets through their **full
 on-chain history** lifts the directly-observed matched total to **$5.6M** in 2,836 swaps (one
 wallet alone $2.9M) - more than ten times the in-window floor - with each wallet's washing
 concentrated in a burst of days, the rotating-fleet pattern again.
