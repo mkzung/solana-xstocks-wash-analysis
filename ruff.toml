@@ -1,0 +1,12 @@
+line-length = 120
+
+[lint]
+# Default rule set (E4/E7/E9/F) plus SIM115 (every file opened via a context manager,
+# routed through analysis/io_util.py - no leaked descriptors), minus two house-style patterns:
+extend-select = ["SIM115"]
+ignore = [
+    "E402",  # several scripts insert their own dir on sys.path before importing the local
+             # metrics_lib sibling module; that import must run after the path insert.
+    "E702",  # compact "a; b" statements are used deliberately in the tight numeric loops,
+             # consistently across the analysis code.
+]

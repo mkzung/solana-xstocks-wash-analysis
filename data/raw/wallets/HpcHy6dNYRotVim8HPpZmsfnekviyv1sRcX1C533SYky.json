@@ -1,0 +1,12 @@
+{
+ "wallet": "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+ "n_sigs": 403,
+ "capped": false,
+ "first_ts": 1777899253,
+ "last_ts": 1782046638,
+ "oldest_sig": "2KLbMVWTnie28hcfsSd33xcoMtWh8CUb5ctBzDKRqguvos64GMoYB7PujYX75xsJz11tJ1Uzmpj62BZB3ukK1R3u",
+ "funder": "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe",
+ "funder_method": "first_signer",
+ "seed_amount": null,
+ "seed_token": null
+}

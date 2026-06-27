@@ -1,0 +1,12 @@
+{
+ "wallet": "HdHmbhYp8MQL5vJhtQw5K9vbY11n8r3VeFgkgP99k2kz",
+ "n_sigs": 10,
+ "capped": false,
+ "first_ts": 1781766945,
+ "last_ts": 1781850087,
+ "oldest_sig": "3SwkkhbbY9cPPRr9GBUh8iEJ4YidEXMDp8MYPoT65iZQkm8xMntuATYTW2gTJZnC3gjX19NpBWqHYjLSAZrERgDY",
+ "funder": null,
+ "funder_method": "no_tx",
+ "seed_amount": null,
+ "seed_token": null
+}

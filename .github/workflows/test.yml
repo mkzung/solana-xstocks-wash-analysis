@@ -1,0 +1,27 @@
+name: test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: pip install ruff==0.15.13 && ruff check analysis/ tests/ dashboard/
+      # the full analysis reruns deterministically over the committed snapshot (no network)
+      - run: python analysis/screen.py
+      - run: python analysis/cluster.py
+      - run: python analysis/temporal.py
+      - run: python analysis/persistence.py
+      - run: python analysis/lifetime.py
+      - run: python analysis/named_wallets.py
+      - run: python analysis/figures.py
+      - run: python analysis/verify.py
+      - run: python -m pytest tests/ -q

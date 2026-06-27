@@ -1,0 +1,12 @@
+{
+ "wallet": "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR",
+ "n_sigs": 2000,
+ "capped": true,
+ "first_ts": 1781997962,
+ "last_ts": 1782046935,
+ "oldest_sig": "5CTZow2faScwP34uxvb1fEURXyPZGnpmifubatKfm6Q5u5bBWH338oWg6uvdU9rEh4pdkq2qTfwXUL8NYEw6psJ4",
+ "funder": "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR",
+ "funder_method": "seed_authority",
+ "seed_amount": 1918222.8,
+ "seed_token": "ZBCNpu"
+}

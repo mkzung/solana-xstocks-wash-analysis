@@ -1,0 +1,17 @@
+rank,symbol,dex,pool,n_trades,window_h,n_wallets,top5_share,n_wash_bots,wash_share,turnover,flag,calib_control
+1,TSLAX,orca,9p7abUFv31ycgu9kckvnoqMMvBy67dqTDM2m6HP9xokN,300,0.41,32,0.64,5,0.8034,34.0,True,False
+2,QQQX,raydium,EibwWLHyuFeqgU6fvi6g5FtDLF9kQsQL5HQXvcJNkDN8,300,1.31,49,0.61,2,0.7801,1624.4,True,False
+3,SPYX,raydium,4pCZCVEiYyT4efNdXUdL2tJF8VGMgiMXrZWq6FiNXhRw,300,0.23,33,0.4967,5,0.4301,55.8,True,False
+4,SPYX,orca,gef4pD5g6GJSjX7hfXKUfhCVpE89BzX9TXnXJNW6kSt,300,0.57,29,0.6667,3,0.4054,145.4,True,False
+5,SPYX,orca,6m6UoVxnmGePnHQ8V6gGrgDba5p1v7MCpM9Ji1LBBVPJ,300,0.42,31,0.72,3,0.3579,82.2,True,False
+6,TSLAX,raydium,8aDaBQkTrS6HVMjyc6EZebgdiaXhLYGriDWKWWp1NpFF,300,13.54,83,0.4233,1,0.059,0.2,False,False
+7,COINX,raydium,w7SGmPeXoMCsjvXqgsAmUn56uypyDsjAtsxeVkaiqxa,300,8.21,28,0.7067,0,0.0,0.2,False,False
+8,CRCLX,raydium,3zozghHn3cCmbAVPF3Bm5AiyT7VorSdHwTt2qJjLfDo2,300,3.54,41,0.6867,0,0.0,0.6,False,False
+9,CRCLX,raydium,G39wywquKbHK8F2wZZZFX3fcsyG91VCCbbr6WEVp5axy,300,9.3,13,0.96,0,0.0,0.1,False,False
+10,CRCLX,raydium,GYqHjuDzTiw7i52Xv1qohDE6eJr6eSZpsrBVikGZyaFV,300,1.5,27,0.8433,0,0.0,0.3,False,False
+11,JUP,dex,HfgjZDmexhFVD28Vkb1NbQwWeXP3uDcVTLPjSGHmRHhL,300,0.66,87,0.46,0,0.0,4.6,False,True
+12,WIF,dex,EP2ib6dYdEeqD8MfE2ezHCxX3kP3K2eLKkirfPm5eyMx,300,9.87,48,0.7433,0,0.0,0.0,False,True
+13,MSTRX,raydium,2ngTuP7xA581dqX9uJkGRqxmKuehY3k4SDfPebeoRG2J,300,15.09,42,0.6933,0,0.0,0.2,False,False
+14,MSTRX,raydium,RyhF4cksVZY7vcqJpoytHcxcGNKRp27PEGhSnEPpbGv,300,13.33,29,0.88,0,0.0,0.2,False,False
+15,NVDAX,raydium,49iMatQtoyabsYAQc8GafVq6aeBFVDxSRH44oiatyyw6,300,14.09,120,0.3767,0,0.0,0.1,False,False
+16,QQQX,raydium,GMjGLWzvK75LPetrgAmdeXnvxc4fUuQPwJxeQqTDU1aG,300,13.53,44,0.7133,0,0.0,0.1,False,False

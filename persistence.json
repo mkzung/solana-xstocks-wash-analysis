@@ -1,0 +1,59 @@
+{
+  "snapshot": "2026-06-21 (primary)",
+  "resampled_at": "2026-06-21T18:06:06Z",
+  "n_pools": 5,
+  "still_flagged": 3,
+  "total_wallet_overlap": 0,
+  "pools": [
+    {
+      "pool": "TSLAX/orca",
+      "snap_bots": 5,
+      "snap_wash": 0.8034,
+      "live_bots": 3,
+      "live_wash": 0.7495,
+      "wallet_overlap": 0,
+      "live_bot_count": 3,
+      "still_flagged": true
+    },
+    {
+      "pool": "QQQX/raydium",
+      "snap_bots": 2,
+      "snap_wash": 0.7801,
+      "live_bots": 2,
+      "live_wash": 0.6911,
+      "wallet_overlap": 0,
+      "live_bot_count": 2,
+      "still_flagged": true
+    },
+    {
+      "pool": "SPYX/raydium",
+      "snap_bots": 5,
+      "snap_wash": 0.4301,
+      "live_bots": 4,
+      "live_wash": 0.1056,
+      "wallet_overlap": 0,
+      "live_bot_count": 4,
+      "still_flagged": false
+    },
+    {
+      "pool": "SPYX/orca",
+      "snap_bots": 3,
+      "snap_wash": 0.4054,
+      "live_bots": 2,
+      "live_wash": 0.413,
+      "wallet_overlap": 0,
+      "live_bot_count": 2,
+      "still_flagged": true
+    },
+    {
+      "pool": "SPYX/orca",
+      "snap_bots": 3,
+      "snap_wash": 0.3579,
+      "live_bots": 1,
+      "live_wash": 0.0918,
+      "wallet_overlap": 0,
+      "live_bot_count": 1,
+      "still_flagged": false
+    }
+  ]
+}

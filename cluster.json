@@ -1,0 +1,482 @@
+{
+  "snapshot": "2026-06-21",
+  "n_flagged_pools": 5,
+  "n_named_bots": 14,
+  "total_bot_matched_usd": 467498,
+  "pools": {
+    "TSLAX/orca/9p7abUFv": {
+      "n_bots": 5,
+      "bots": [
+        {
+          "wallet": "vwbEYDGUamnFvhr9fq6RQnXK8Pn76okVw1kwgFPpt9Z",
+          "buys": 21,
+          "sells": 21,
+          "buy_usd": 10212,
+          "sell_usd": 10208,
+          "matched_usd": 20416,
+          "balance": 1.0,
+          "origin": "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv",
+          "seed": 508.83,
+          "n_txs": 90,
+          "first_ts": 1782044724
+        },
+        {
+          "wallet": "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv",
+          "buys": 21,
+          "sells": 21,
+          "buy_usd": 10127,
+          "sell_usd": 10123,
+          "matched_usd": 20246,
+          "balance": 1.0,
+          "origin": "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC",
+          "seed": 513.34,
+          "n_txs": 90,
+          "first_ts": 1782044443
+        },
+        {
+          "wallet": "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC",
+          "buys": 21,
+          "sells": 21,
+          "buy_usd": 10022,
+          "sell_usd": 10117,
+          "matched_usd": 20043,
+          "balance": 0.991,
+          "origin": "8gw6JyEW1PGLzehpNeNU4jzb2iVtjet1o7YHQPxM1wmH",
+          "seed": 517.67,
+          "n_txs": 90,
+          "first_ts": 1782044120
+        },
+        {
+          "wallet": "2eTkWQyt9iGuXP5XUayXRdZuvLoHzDf48ZDjY8EWQUiF",
+          "buys": 20,
+          "sells": 20,
+          "buy_usd": 10021,
+          "sell_usd": 10018,
+          "matched_usd": 20036,
+          "balance": 1.0,
+          "origin": "vwbEYDGUamnFvhr9fq6RQnXK8Pn76okVw1kwgFPpt9Z",
+          "seed": 504.48,
+          "n_txs": 83,
+          "first_ts": 1782044996
+        },
+        {
+          "wallet": "8gw6JyEW1PGLzehpNeNU4jzb2iVtjet1o7YHQPxM1wmH",
+          "buys": 13,
+          "sells": 13,
+          "buy_usd": 6146,
+          "sell_usd": 6210,
+          "matched_usd": 12291,
+          "balance": 0.99,
+          "origin": "85zuUQ5wHER33mpqxezdaUNjnWfL6fhh5Z7wNnaURTjS",
+          "seed": 522.22,
+          "n_txs": 90,
+          "first_ts": 1782043767
+        }
+      ],
+      "matched_usd": 93032
+    },
+    "QQQX/raydium/EibwWLHy": {
+      "n_bots": 2,
+      "bots": [
+        {
+          "wallet": "C6FyA84D6JLtkSSyq45gcLFi67P3q61FhGohEFYd9rvF",
+          "buys": 36,
+          "sells": 36,
+          "buy_usd": 10657,
+          "sell_usd": 10695,
+          "matched_usd": 21314,
+          "balance": 0.996,
+          "origin": "D8cJRpXaCWVK8c3doDq7Ymoz2XE4WyhFhbgNytWwqptA",
+          "seed": 15.28,
+          "n_txs": 159,
+          "first_ts": 1777389726
+        },
+        {
+          "wallet": "H2iJUNtdAbVMFQHNgibN9MxZry8UfmpfsVNUnc9eKGog",
+          "buys": 35,
+          "sells": 35,
+          "buy_usd": 9453,
+          "sell_usd": 9507,
+          "matched_usd": 18905,
+          "balance": 0.994,
+          "origin": "3oUEaNt7uL7pjZ6gdiAiEVRp9ZCcGRec7B5aSvXcjbWS",
+          "seed": 249.45,
+          "n_txs": 144,
+          "first_ts": 1782040926
+        }
+      ],
+      "matched_usd": 40219
+    },
+    "SPYX/raydium/4pCZCVEi": {
+      "n_bots": 5,
+      "bots": [
+        {
+          "wallet": "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz",
+          "buys": 10,
+          "sells": 10,
+          "buy_usd": 31197,
+          "sell_usd": 30981,
+          "matched_usd": 61962,
+          "balance": 0.993,
+          "origin": "7Rdf1ia4vxaw6zYbf9yrr618FSc2qCsmtWSnBdpNHkhQ",
+          "seed": 5016.62,
+          "n_txs": 45,
+          "first_ts": 1782044712
+        },
+        {
+          "wallet": "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+          "buys": 9,
+          "sells": 8,
+          "buy_usd": 18456,
+          "sell_usd": 18672,
+          "matched_usd": 36911,
+          "balance": 0.988,
+          "origin": "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe",
+          "seed": null,
+          "n_txs": 403,
+          "first_ts": 1777899253
+        },
+        {
+          "wallet": "78jkE1hPATuzEnAY6ENpfuLf9DZYtXS5iqnmYAeFpFNY",
+          "buys": 7,
+          "sells": 7,
+          "buy_usd": 12228,
+          "sell_usd": 12224,
+          "matched_usd": 24449,
+          "balance": 1.0,
+          "origin": "2LWHCxow3sekcDywcEv8Fk7yaePW2QzKWxHfjwGNh4HD",
+          "seed": null,
+          "n_txs": 246,
+          "first_ts": 1761559800
+        },
+        {
+          "wallet": "3T1YdUjo2edVC1oJ6MK7HvKic2JKGs53GC4HuEV6U7rv",
+          "buys": 7,
+          "sells": 7,
+          "buy_usd": 12218,
+          "sell_usd": 12214,
+          "matched_usd": 24428,
+          "balance": 1.0,
+          "origin": "8n39TmS5PotDFGGWybMz1QXuRUVgQMUS7ikVxUD8o74g",
+          "seed": null,
+          "n_txs": 245,
+          "first_ts": 1762858601
+        },
+        {
+          "wallet": "B2ES7UzwvJTw2A7dX2WpvqQ7xxB58AkSbSp4WbE2eCqL",
+          "buys": 7,
+          "sells": 7,
+          "buy_usd": 12213,
+          "sell_usd": 12209,
+          "matched_usd": 24419,
+          "balance": 1.0,
+          "origin": null,
+          "seed": null,
+          "n_txs": 248,
+          "first_ts": 1761559819
+        }
+      ],
+      "matched_usd": 172169
+    },
+    "SPYX/orca/gef4pD5g": {
+      "n_bots": 3,
+      "bots": [
+        {
+          "wallet": "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+          "buys": 24,
+          "sells": 22,
+          "buy_usd": 32754,
+          "sell_usd": 32252,
+          "matched_usd": 64504,
+          "balance": 0.985,
+          "origin": "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe",
+          "seed": null,
+          "n_txs": 403,
+          "first_ts": 1777899253
+        },
+        {
+          "wallet": "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz",
+          "buys": 10,
+          "sells": 10,
+          "buy_usd": 15845,
+          "sell_usd": 16043,
+          "matched_usd": 31690,
+          "balance": 0.988,
+          "origin": "7Rdf1ia4vxaw6zYbf9yrr618FSc2qCsmtWSnBdpNHkhQ",
+          "seed": 5016.62,
+          "n_txs": 45,
+          "first_ts": 1782044712
+        },
+        {
+          "wallet": "964TGnJnjTUZDoVtQ1kaEuyrLLBjAqZhhVgCsVupQ6AK",
+          "buys": 8,
+          "sells": 7,
+          "buy_usd": 10110,
+          "sell_usd": 9281,
+          "matched_usd": 18563,
+          "balance": 0.918,
+          "origin": "HdHmbhYp8MQL5vJhtQw5K9vbY11n8r3VeFgkgP99k2kz",
+          "seed": 4000.0,
+          "n_txs": 244,
+          "first_ts": 1781835696
+        }
+      ],
+      "matched_usd": 114757
+    },
+    "SPYX/orca/6m6UoVxn": {
+      "n_bots": 3,
+      "bots": [
+        {
+          "wallet": "33X9awzeff9PbKBpQYaf1ZJTp8Ksxv8Fne3WxajLpwM7",
+          "buys": 23,
+          "sells": 24,
+          "buy_usd": 14397,
+          "sell_usd": 13536,
+          "matched_usd": 27073,
+          "balance": 0.94,
+          "origin": "5AkARjvfLVS9BpXNSA48v6Rr9TgeLMbafm4HeAaLGBnN",
+          "seed": null,
+          "n_txs": 1020,
+          "first_ts": 1782024198
+        },
+        {
+          "wallet": "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+          "buys": 13,
+          "sells": 10,
+          "buy_usd": 7176,
+          "sell_usd": 7389,
+          "matched_usd": 14351,
+          "balance": 0.971,
+          "origin": "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe",
+          "seed": null,
+          "n_txs": 403,
+          "first_ts": 1777899253
+        },
+        {
+          "wallet": "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz",
+          "buys": 9,
+          "sells": 8,
+          "buy_usd": 2948,
+          "sell_usd": 2948,
+          "matched_usd": 5897,
+          "balance": 1.0,
+          "origin": "7Rdf1ia4vxaw6zYbf9yrr618FSc2qCsmtWSnBdpNHkhQ",
+          "seed": 5016.62,
+          "n_txs": 45,
+          "first_ts": 1782044712
+        }
+      ],
+      "matched_usd": 47321
+    }
+  },
+  "creation_chains": {
+    "TSLAX/orca/9p7abUFv": [
+      [
+        "vwbEYDGUamnFvhr9fq6RQnXK8Pn76okVw1kwgFPpt9Z",
+        "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv",
+        "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC",
+        "8gw6JyEW1PGLzehpNeNU4jzb2iVtjet1o7YHQPxM1wmH",
+        "85zuUQ5wHER33mpqxezdaUNjnWfL6fhh5Z7wNnaURTjS",
+        "H9c7D19PycFbYRiZMEBN4UvV9JyCWmQovqruNaG8K11i"
+      ],
+      [
+        "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv",
+        "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC",
+        "8gw6JyEW1PGLzehpNeNU4jzb2iVtjet1o7YHQPxM1wmH",
+        "85zuUQ5wHER33mpqxezdaUNjnWfL6fhh5Z7wNnaURTjS",
+        "H9c7D19PycFbYRiZMEBN4UvV9JyCWmQovqruNaG8K11i"
+      ],
+      [
+        "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC",
+        "8gw6JyEW1PGLzehpNeNU4jzb2iVtjet1o7YHQPxM1wmH",
+        "85zuUQ5wHER33mpqxezdaUNjnWfL6fhh5Z7wNnaURTjS",
+        "H9c7D19PycFbYRiZMEBN4UvV9JyCWmQovqruNaG8K11i"
+      ],
+      [
+        "2eTkWQyt9iGuXP5XUayXRdZuvLoHzDf48ZDjY8EWQUiF",
+        "vwbEYDGUamnFvhr9fq6RQnXK8Pn76okVw1kwgFPpt9Z",
+        "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv",
+        "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC",
+        "8gw6JyEW1PGLzehpNeNU4jzb2iVtjet1o7YHQPxM1wmH",
+        "85zuUQ5wHER33mpqxezdaUNjnWfL6fhh5Z7wNnaURTjS",
+        "H9c7D19PycFbYRiZMEBN4UvV9JyCWmQovqruNaG8K11i"
+      ],
+      [
+        "8gw6JyEW1PGLzehpNeNU4jzb2iVtjet1o7YHQPxM1wmH",
+        "85zuUQ5wHER33mpqxezdaUNjnWfL6fhh5Z7wNnaURTjS",
+        "H9c7D19PycFbYRiZMEBN4UvV9JyCWmQovqruNaG8K11i"
+      ]
+    ],
+    "QQQX/raydium/EibwWLHy": [
+      [
+        "C6FyA84D6JLtkSSyq45gcLFi67P3q61FhGohEFYd9rvF",
+        "D8cJRpXaCWVK8c3doDq7Ymoz2XE4WyhFhbgNytWwqptA"
+      ],
+      [
+        "H2iJUNtdAbVMFQHNgibN9MxZry8UfmpfsVNUnc9eKGog",
+        "3oUEaNt7uL7pjZ6gdiAiEVRp9ZCcGRec7B5aSvXcjbWS"
+      ]
+    ],
+    "SPYX/raydium/4pCZCVEi": [
+      [
+        "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz",
+        "7Rdf1ia4vxaw6zYbf9yrr618FSc2qCsmtWSnBdpNHkhQ",
+        "DNfcjDQiBUY2Ub9UoV88ZuVGdgbtrRKg1K4z7bzmb93"
+      ],
+      [
+        "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+        "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe"
+      ],
+      [
+        "78jkE1hPATuzEnAY6ENpfuLf9DZYtXS5iqnmYAeFpFNY",
+        "2LWHCxow3sekcDywcEv8Fk7yaePW2QzKWxHfjwGNh4HD",
+        "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR"
+      ],
+      [
+        "3T1YdUjo2edVC1oJ6MK7HvKic2JKGs53GC4HuEV6U7rv",
+        "8n39TmS5PotDFGGWybMz1QXuRUVgQMUS7ikVxUD8o74g",
+        "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR"
+      ],
+      [
+        "B2ES7UzwvJTw2A7dX2WpvqQ7xxB58AkSbSp4WbE2eCqL"
+      ]
+    ],
+    "SPYX/orca/gef4pD5g": [
+      [
+        "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+        "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe"
+      ],
+      [
+        "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz",
+        "7Rdf1ia4vxaw6zYbf9yrr618FSc2qCsmtWSnBdpNHkhQ",
+        "DNfcjDQiBUY2Ub9UoV88ZuVGdgbtrRKg1K4z7bzmb93"
+      ],
+      [
+        "964TGnJnjTUZDoVtQ1kaEuyrLLBjAqZhhVgCsVupQ6AK",
+        "HdHmbhYp8MQL5vJhtQw5K9vbY11n8r3VeFgkgP99k2kz"
+      ]
+    ],
+    "SPYX/orca/6m6UoVxn": [
+      [
+        "33X9awzeff9PbKBpQYaf1ZJTp8Ksxv8Fne3WxajLpwM7",
+        "5AkARjvfLVS9BpXNSA48v6Rr9TgeLMbafm4HeAaLGBnN",
+        "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe"
+      ],
+      [
+        "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+        "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe"
+      ],
+      [
+        "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz",
+        "7Rdf1ia4vxaw6zYbf9yrr618FSc2qCsmtWSnBdpNHkhQ",
+        "DNfcjDQiBUY2Ub9UoV88ZuVGdgbtrRKg1K4z7bzmb93"
+      ]
+    ]
+  },
+  "multi_pool_wallets": {
+    "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz": [
+      "SPYX/raydium/4pCZCVEi",
+      "SPYX/orca/gef4pD5g",
+      "SPYX/orca/6m6UoVxn"
+    ],
+    "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky": [
+      "SPYX/raydium/4pCZCVEi",
+      "SPYX/orca/gef4pD5g",
+      "SPYX/orca/6m6UoVxn"
+    ]
+  },
+  "sibling_fleets": {
+    "TSLAX/orca/9p7abUFv": {
+      "21b/21s": [
+        "vwbEYDGUamnFvhr9fq6RQnXK8Pn76okVw1kwgFPpt9Z",
+        "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv",
+        "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC"
+      ]
+    },
+    "SPYX/raydium/4pCZCVEi": {
+      "7b/7s": [
+        "78jkE1hPATuzEnAY6ENpfuLf9DZYtXS5iqnmYAeFpFNY",
+        "3T1YdUjo2edVC1oJ6MK7HvKic2JKGs53GC4HuEV6U7rv",
+        "B2ES7UzwvJTw2A7dX2WpvqQ7xxB58AkSbSp4WbE2eCqL"
+      ]
+    }
+  },
+  "funding_edges": {
+    "2eTkWQyt9iGuXP5XUayXRdZuvLoHzDf48ZDjY8EWQUiF": {
+      "parent": "vwbEYDGUamnFvhr9fq6RQnXK8Pn76okVw1kwgFPpt9Z",
+      "seed": 504.48
+    },
+    "33X9awzeff9PbKBpQYaf1ZJTp8Ksxv8Fne3WxajLpwM7": {
+      "parent": "5AkARjvfLVS9BpXNSA48v6Rr9TgeLMbafm4HeAaLGBnN",
+      "seed": null
+    },
+    "3T1YdUjo2edVC1oJ6MK7HvKic2JKGs53GC4HuEV6U7rv": {
+      "parent": "8n39TmS5PotDFGGWybMz1QXuRUVgQMUS7ikVxUD8o74g",
+      "seed": null
+    },
+    "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz": {
+      "parent": "7Rdf1ia4vxaw6zYbf9yrr618FSc2qCsmtWSnBdpNHkhQ",
+      "seed": 5016.62
+    },
+    "78jkE1hPATuzEnAY6ENpfuLf9DZYtXS5iqnmYAeFpFNY": {
+      "parent": "2LWHCxow3sekcDywcEv8Fk7yaePW2QzKWxHfjwGNh4HD",
+      "seed": null
+    },
+    "8gw6JyEW1PGLzehpNeNU4jzb2iVtjet1o7YHQPxM1wmH": {
+      "parent": "85zuUQ5wHER33mpqxezdaUNjnWfL6fhh5Z7wNnaURTjS",
+      "seed": 522.22
+    },
+    "964TGnJnjTUZDoVtQ1kaEuyrLLBjAqZhhVgCsVupQ6AK": {
+      "parent": "HdHmbhYp8MQL5vJhtQw5K9vbY11n8r3VeFgkgP99k2kz",
+      "seed": 4000.0
+    },
+    "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv": {
+      "parent": "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC",
+      "seed": 513.34
+    },
+    "C6FyA84D6JLtkSSyq45gcLFi67P3q61FhGohEFYd9rvF": {
+      "parent": "D8cJRpXaCWVK8c3doDq7Ymoz2XE4WyhFhbgNytWwqptA",
+      "seed": 15.28
+    },
+    "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC": {
+      "parent": "8gw6JyEW1PGLzehpNeNU4jzb2iVtjet1o7YHQPxM1wmH",
+      "seed": 517.67
+    },
+    "H2iJUNtdAbVMFQHNgibN9MxZry8UfmpfsVNUnc9eKGog": {
+      "parent": "3oUEaNt7uL7pjZ6gdiAiEVRp9ZCcGRec7B5aSvXcjbWS",
+      "seed": 249.45
+    },
+    "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky": {
+      "parent": "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe",
+      "seed": null
+    },
+    "vwbEYDGUamnFvhr9fq6RQnXK8Pn76okVw1kwgFPpt9Z": {
+      "parent": "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv",
+      "seed": 508.83
+    },
+    "2LWHCxow3sekcDywcEv8Fk7yaePW2QzKWxHfjwGNh4HD": {
+      "parent": "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR",
+      "seed": null
+    },
+    "5AkARjvfLVS9BpXNSA48v6Rr9TgeLMbafm4HeAaLGBnN": {
+      "parent": "F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe",
+      "seed": null
+    },
+    "7Rdf1ia4vxaw6zYbf9yrr618FSc2qCsmtWSnBdpNHkhQ": {
+      "parent": "DNfcjDQiBUY2Ub9UoV88ZuVGdgbtrRKg1K4z7bzmb93",
+      "seed": 5027.21
+    },
+    "85zuUQ5wHER33mpqxezdaUNjnWfL6fhh5Z7wNnaURTjS": {
+      "parent": "H9c7D19PycFbYRiZMEBN4UvV9JyCWmQovqruNaG8K11i",
+      "seed": 526.53
+    },
+    "8n39TmS5PotDFGGWybMz1QXuRUVgQMUS7ikVxUD8o74g": {
+      "parent": "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR",
+      "seed": null
+    },
+    "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR": {
+      "parent": "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR",
+      "seed": 1918222.8
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+ "wallet": "B2ES7UzwvJTw2A7dX2WpvqQ7xxB58AkSbSp4WbE2eCqL",
+ "n_sigs": 248,
+ "capped": false,
+ "first_ts": 1761559819,
+ "last_ts": 1782046132,
+ "oldest_sig": "3H92cPqvmNaP9dPV34c1AaghhwBETpSdqjw2qbJQ6BK9VUkUAQnWicKa1DVkUjVTEBMdLgjD3kVVvn8SH4EgRUPk",
+ "funder": null,
+ "funder_method": "no_tx",
+ "seed_amount": null,
+ "seed_token": null
+}

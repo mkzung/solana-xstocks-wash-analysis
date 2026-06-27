@@ -1,0 +1,12 @@
+{
+ "wallet": "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv",
+ "n_sigs": 90,
+ "capped": false,
+ "first_ts": 1782044443,
+ "last_ts": 1782045050,
+ "oldest_sig": "o1BTWyaimuJgRYEWGj5kcDqARrWb5k9sBwCzYa6DjDwabnzM7kiMvi4KT2WYbvBHcSHpAnfkV9dKmPBnPjpYqFD",
+ "funder": "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC",
+ "funder_method": "first_signer",
+ "seed_amount": 513.34,
+ "seed_token": "?"
+}

@@ -1,0 +1,12 @@
+{
+ "wallet": "3oUEaNt7uL7pjZ6gdiAiEVRp9ZCcGRec7B5aSvXcjbWS",
+ "n_sigs": 3000,
+ "capped": true,
+ "first_ts": 1781944732,
+ "last_ts": 1782046760,
+ "oldest_sig": "eopgWKwtxMjiifKpdHfUaYSivn8pMLE1bTLoTuMg4Mcvaww3MJMk4DmXz1yb27zPmyeN3a11tzNNwwtKdc2NARa",
+ "funder": null,
+ "funder_method": "self",
+ "seed_amount": null,
+ "seed_token": null
+}

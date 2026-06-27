@@ -1,0 +1,217 @@
+{
+  "snapshot": "2026-06-21",
+  "pools": {
+    "TSLAX/orca 9p7a": {
+      "pool": "9p7abUFv31ycgu9kckvnoqMMvBy67dqTDM2m6HP9xokN",
+      "turnover": 34.0,
+      "vol_24h": 4258379,
+      "window_h": 0.41,
+      "n_bots": 5,
+      "wash_share": 0.8034,
+      "matched_in_window": 93032,
+      "manufactured_24h_share": 3421182,
+      "manufactured_24h_rate": 5445776,
+      "age": {
+        "n_days": 182,
+        "span_days": 181.0,
+        "first_bar": "2025-12-22",
+        "vol_total": 49247972
+      },
+      "cadence": [
+        {
+          "wallet": "vwbEYDGUamnFvhr9fq6RQnXK8Pn76okVw1kwgFPpt9Z",
+          "n": 42,
+          "median_gap_s": 4.0,
+          "gap_iqr_s": 2.0,
+          "alternation": 1.0,
+          "span_min": 2.9
+        },
+        {
+          "wallet": "AtzmNv2ww5iQRT5XytY43SKvTTeFPL3LdrFPeCiJDFAv",
+          "n": 42,
+          "median_gap_s": 4.0,
+          "gap_iqr_s": 3.0,
+          "alternation": 1.0,
+          "span_min": 3.0
+        },
+        {
+          "wallet": "FMMs8SGxukt4DRy1wKGyjCcovqj2xci16doZDPqc33eC",
+          "n": 42,
+          "median_gap_s": 5.0,
+          "gap_iqr_s": 2.5,
+          "alternation": 1.0,
+          "span_min": 3.7
+        }
+      ]
+    },
+    "QQQX/raydium Eibw": {
+      "pool": "EibwWLHyuFeqgU6fvi6g5FtDLF9kQsQL5HQXvcJNkDN8",
+      "turnover": 1624.4,
+      "vol_24h": 33683137,
+      "window_h": 1.31,
+      "n_bots": 2,
+      "wash_share": 0.7801,
+      "matched_in_window": 40219,
+      "manufactured_24h_share": 26276215,
+      "manufactured_24h_rate": 736837,
+      "age": {
+        "n_days": 5,
+        "span_days": 355.0,
+        "first_bar": "2025-07-01",
+        "vol_total": 33634242
+      },
+      "cadence": [
+        {
+          "wallet": "C6FyA84D6JLtkSSyq45gcLFi67P3q61FhGohEFYd9rvF",
+          "n": 72,
+          "median_gap_s": 17.0,
+          "gap_iqr_s": 12.0,
+          "alternation": 1.0,
+          "span_min": 21.3
+        },
+        {
+          "wallet": "H2iJUNtdAbVMFQHNgibN9MxZry8UfmpfsVNUnc9eKGog",
+          "n": 70,
+          "median_gap_s": 19.0,
+          "gap_iqr_s": 12.0,
+          "alternation": 1.0,
+          "span_min": 26.5
+        }
+      ]
+    },
+    "SPYX/raydium 4pCZ": {
+      "pool": "4pCZCVEiYyT4efNdXUdL2tJF8VGMgiMXrZWq6FiNXhRw",
+      "turnover": 55.8,
+      "vol_24h": 93458572,
+      "window_h": 0.23,
+      "n_bots": 5,
+      "wash_share": 0.4301,
+      "matched_in_window": 172169,
+      "manufactured_24h_share": 40196532,
+      "manufactured_24h_rate": 17965461,
+      "age": {
+        "n_days": 35,
+        "span_days": 95.0,
+        "first_bar": "2026-03-18",
+        "vol_total": 309371827
+      },
+      "cadence": [
+        {
+          "wallet": "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz",
+          "n": 20,
+          "median_gap_s": 15.0,
+          "gap_iqr_s": 12.0,
+          "alternation": 1.0,
+          "span_min": 6.7
+        },
+        {
+          "wallet": "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+          "n": 17,
+          "median_gap_s": 9.5,
+          "gap_iqr_s": 10.0,
+          "alternation": 0.938,
+          "span_min": 5.0
+        },
+        {
+          "wallet": "3T1YdUjo2edVC1oJ6MK7HvKic2JKGs53GC4HuEV6U7rv",
+          "n": 14,
+          "median_gap_s": 8.0,
+          "gap_iqr_s": 2.0,
+          "alternation": 1.0,
+          "span_min": 1.9
+        }
+      ]
+    },
+    "SPYX/orca gef4": {
+      "pool": "gef4pD5g6GJSjX7hfXKUfhCVpE89BzX9TXnXJNW6kSt",
+      "turnover": 145.4,
+      "vol_24h": 77967976,
+      "window_h": 0.57,
+      "n_bots": 3,
+      "wash_share": 0.4054,
+      "matched_in_window": 114757,
+      "manufactured_24h_share": 31608217,
+      "manufactured_24h_rate": 4831874,
+      "age": {
+        "n_days": 9,
+        "span_days": 227.0,
+        "first_bar": "2025-11-06",
+        "vol_total": 388653513
+      },
+      "cadence": [
+        {
+          "wallet": "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+          "n": 46,
+          "median_gap_s": 12.0,
+          "gap_iqr_s": 18.0,
+          "alternation": 0.822,
+          "span_min": 33.0
+        },
+        {
+          "wallet": "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz",
+          "n": 20,
+          "median_gap_s": 15.0,
+          "gap_iqr_s": 12.0,
+          "alternation": 1.0,
+          "span_min": 6.7
+        },
+        {
+          "wallet": "964TGnJnjTUZDoVtQ1kaEuyrLLBjAqZhhVgCsVupQ6AK",
+          "n": 15,
+          "median_gap_s": 8.0,
+          "gap_iqr_s": 4.5,
+          "alternation": 0.929,
+          "span_min": 2.4
+        }
+      ]
+    },
+    "SPYX/orca 6m6U": {
+      "pool": "6m6UoVxnmGePnHQ8V6gGrgDba5p1v7MCpM9Ji1LBBVPJ",
+      "turnover": 82.2,
+      "vol_24h": 2598437,
+      "window_h": 0.42,
+      "n_bots": 3,
+      "wash_share": 0.3579,
+      "matched_in_window": 47321,
+      "manufactured_24h_share": 929981,
+      "manufactured_24h_rate": 2704057,
+      "age": {
+        "n_days": 2,
+        "span_days": 8.0,
+        "first_bar": "2026-06-13",
+        "vol_total": 2641710
+      },
+      "cadence": [
+        {
+          "wallet": "33X9awzeff9PbKBpQYaf1ZJTp8Ksxv8Fne3WxajLpwM7",
+          "n": 47,
+          "median_gap_s": 9.0,
+          "gap_iqr_s": 10.0,
+          "alternation": 0.826,
+          "span_min": 24.5
+        },
+        {
+          "wallet": "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky",
+          "n": 23,
+          "median_gap_s": 17.0,
+          "gap_iqr_s": 24.0,
+          "alternation": 0.727,
+          "span_min": 23.9
+        },
+        {
+          "wallet": "6G11Z8xR1auD4mbgkh9minP9fQycKWdQcAJ7uxH8Smoz",
+          "n": 17,
+          "median_gap_s": 21.0,
+          "gap_iqr_s": 13.5,
+          "alternation": 0.938,
+          "span_min": 6.7
+        }
+      ]
+    }
+  },
+  "matched_in_window_floor": 467498,
+  "manufactured_24h_rate": 31684004,
+  "manufactured_24h_share": 102432127,
+  "earliest_bot": "2025-10-27",
+  "earliest_funder": "2024-12-25"
+}
