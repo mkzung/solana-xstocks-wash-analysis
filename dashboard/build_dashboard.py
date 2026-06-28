@@ -77,11 +77,11 @@ manu_lo, manu_hi = T["manufactured_24h_rate"], T["manufactured_24h_share"]
 HTML = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <title>On-chain wash trading in Solana's tokenized stocks | Market Health</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"><style>{CSS}</style></head><body>
-<header><h1>A wash-trading signature in Solana's tokenized stocks: five xStock pools dominated by matched-trade bot fleets</h1>
+<header><h1>A wash-trading signature in Solana's tokenized stocks: five xStock pools carrying matched-trade bot fleets</h1>
 <div class="meta">DN Institute Market Health Wiki | <a href="https://github.com/mkzung/solana-xstocks-wash-analysis">github.com/mkzung/solana-xstocks-wash-analysis</a> | Max Gorbuk<br>
 Free Dexscreener + GeckoTerminal + Solana RPC + Helius data | snapshot 2026-06-21 | {S['n_pools']} pools screened</div></header>
 <main>
-<p class="lead">A wallet-level detector scored the liquid xStock pools on Solana. <strong>{S['n_flagged']}</strong> exhibit a wash-trading signature: automated wallets that buy and sell in matched size, alternate perfectly, and are funded in coordinated chains. Every other pool, including the same xStocks in their other pools, scores at most {S['max_nonflagged_score']:.2f}. A flag on the on-chain pattern, not on any identified person; each claim is a named wallet and a transaction hash.</p>
+<p class="lead">A wallet-level detector scored the liquid xStock pools on Solana. <strong>{S['n_flagged']}</strong> exhibit a wash-trading signature: automated wallets that buy and sell in matched size, alternate buy and sell at a near-fixed cadence, and trace to coordinated funding. Every other pool, including the same xStocks in their other pools, scores at most {S['max_nonflagged_score']:.2f}. A flag on the on-chain pattern, not on any identified person; each claim is a named wallet and a transaction hash.</p>
 <p class="lead" style="font-size:13px;color:var(--muted)">Scope: the flagged conduct is by pseudonymous automated wallets. Nothing here indicates Backed Finance, Kraken, the Solana Foundation, Raydium, or Orca operate, know of, or benefit from these wallets; xStock pools are permissionless. Whether the wallets acted with intent to mislead, the element wash trading requires in law, is not established here.</p>
 <div class="grid">
   <div class="stat bad"><div class="label">Flagged pools</div><div class="value">{S['n_flagged']} / {S['n_pools']}</div><div class="sub">score 0.36-0.80, every other pool &le; {S['max_nonflagged_score']:.2f}</div></div>
