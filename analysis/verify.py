@@ -174,7 +174,9 @@ def main():
                 per_wallet[wal] = m
     top10 = {w for w, _ in sorted(per_wallet.items(), key=lambda kv: -kv[1])[:10]}
     appendix = read_text(os.path.join(ROOT, "post", "index.md")).split("## Appendix")[-1].split("## References")[0]
-    listed = set(re.findall(r"[1-9A-HJ-NP-Za-km-z]{40,44}", appendix))
+    # Read the addresses out of the table cells (backticked), not out of every base58-looking token
+    # in the section: a git commit hash can be all-base58 too, and the pin link sits in this section.
+    listed = set(re.findall(r"`([1-9A-HJ-NP-Za-km-z]{40,44})`", appendix))
     ck("post Appendix lists exactly the 10 largest distinct wallets by matched USD", listed == top10)
 
     post = read_text(os.path.join(ROOT, "post", "index.md"))
