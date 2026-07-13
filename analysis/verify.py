@@ -7,7 +7,7 @@ import re
 import glob
 import bisect
 import statistics
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime
 from io_util import read_json, read_text
 
@@ -221,11 +221,51 @@ def main():
     ck("persistence: 3/5 re-flag, 0 wallet overlap (matches post)",
        P["still_flagged"] == 3 and P["total_wallet_overlap"] == 0 and "Three of the five pools" in post)
 
-    # 17) funding chain: the exact five seeds match the edges and the post
-    seeds_expected = {"8gw6JyEW": 522.22, "FMMs8SGx": 517.67, "AtzmNv2w": 513.34, "vwbEYDGU": 508.83, "2eTkWQyt": 504.48}
+    # 16b) the post quotes per-pool bot counts (5, 2, 5, 3, 3) that sum to 18 appearances while
+    #      naming 14 distinct wallets, because two wallets trade more than one pool. Recompute all
+    #      three numbers: the sentence exists precisely because the two counts differ.
+    NW = read_json(os.path.join(ROOT, "data", "named_wallets.json"))
+    appearances = len(NW)
+    distinct = len({r["wallet"] for r in NW})
+    multi = sum(1 for _w, n in Counter(r["wallet"] for r in NW).items() if n > 1)
+    ck("bot appearances (18) vs distinct wallets (14), two of them multi-pool - and the post says so",
+       appearances == 18 and distinct == 14 and multi == 2
+       and "add up to eighteen" in post and "is **fourteen**" in post
+       and "two wallets trade in more than one pool" in post)
+
+    # 17) funding chain: the exact six seeds match the edges and the post. The chain the post
+    #     tells must also BE the longest one cluster.py finds for the pool - the figure used to
+    #     draw six of the seven wallets, so the post told a shorter chain than its own data had.
+    seeds_expected = {"85zuUQ5w": 526.53, "8gw6JyEW": 522.22, "FMMs8SGx": 517.67,
+                      "AtzmNv2w": 513.34, "vwbEYDGU": 508.83, "2eTkWQyt": 504.48}
     by_child = {w[:8]: seed for _, w, seed, _n in read_json(os.path.join(ROOT, "data", "funding_edges.json"))["edges"]}
-    ck("funding chain: exact 5 seeds match edges and post",
+    ck("funding chain: exact 6 seeds match edges and post",
        all(by_child.get(k) == v for k, v in seeds_expected.items()) and all(f"{v:.2f}" in post for v in seeds_expected.values()))
+
+    chains = read_json(os.path.join(ROOT, "cluster.json"))["creation_chains"]
+    longest = max((ch for chs in chains.values() for ch in chs), key=len)
+    ck("post tells the LONGEST chain cluster.py found (7 wallets, no truncation)",
+       len(longest) == 7 and len(seeds_expected) == len(longest) - 1
+       and all(w[:8] in post for w in longest))
+
+    # the near-constant step is the "automated deployment" claim, so pin the range the post quotes
+    ordered = sorted(seeds_expected.values(), reverse=True)
+    steps = [round(a - b, 2) for a, b in zip(ordered, ordered[1:])]
+    ck("seed steps really are near-constant (4.3 to 4.6 USDT, as the post says)",
+       all(4.3 <= s <= 4.6 for s in steps) and "4.3 to 4.6 USDT" in post)
+
+    # the post says the chain stops at the top wallet because the tracer walks SIX levels and that
+    # is where it sits - a claim about our own code, so read the cap out of the code and check that
+    # the top of the chain really is at it.
+    src = read_text(os.path.join(os.path.dirname(os.path.abspath(__file__)), "trace_tree.py"))
+    max_depth = int(re.search(r"^MAX_DEPTH\s*=\s*(\d+)", src, re.M).group(1))
+    parent = {c: p for p, c, _s, _n in read_json(os.path.join(ROOT, "data", "funding_edges.json"))["edges"]}
+    top, hops = longest[0], 0
+    while top in parent and parent[top] != top:
+        top, hops = parent[top], hops + 1
+    ck("the chain stops at the trace's depth cap (six levels), exactly as the post says",
+       max_depth == 6 and hops == 6 and top.startswith("H9c7D19P")
+       and "walks six levels up" in post)
 
     # 18) the bimodal medians the post cites (0.94 flagged vs 0.66 control)
     fb, cb = [], []
@@ -370,6 +410,39 @@ def main():
     ck("full-window fleet discriminates (non-flagged <=1 bot, flagged >=2); sub-window share confound real",
        full_nonflagged_max <= 1 and min_flagged_bots >= 2 and n_above_flag == 4
        and "sustained across the whole snapshot" in post and "four of the non-flagged" in post)
+
+    # The post pins this repo in three places (the short SHA, the tree link, the named_wallets
+    # link). They have to be bumped together: a half-bumped pin sends the reader to a tree that
+    # does not match the post, which is the whole point of pinning. Cannot check the SHA is
+    # current from offline, but can check the three agree.
+    pins = re.findall(r"solana-xstocks-wash-analysis/(?:tree|blob)/([0-9a-f]{40})", post)
+    short = re.findall(r"pinned at commit \[`([0-9a-f]{7,40})`\]", post)
+    ck("the post's companion pins all point at ONE commit (no half-bumped pin)",
+       len(pins) >= 2 and len(set(pins)) == 1 and len(short) == 1 and pins[0].startswith(short[0]))
+
+    # Withdrawn claims must die on EVERY published surface, not just in the post. The circular
+    # Fisher p-value was cut from the post but survived for a day in dashboard.html and index.html,
+    # which are the GitHub Pages site. Anything retracted goes in this list and stays dead.
+    withdrawn = ["Fisher", "hypergeom", "8e-5", "1 in 12,000", "statistically significant",
+                 "order of magnitude", "runs continuously", "Two figures bound", "is an LP",
+                 "Six TSLAX", "six-wallet", "~4.5 USDT"]
+    # strip the embedded base64 images first: they are ~680kB of [A-Za-z0-9+/] per page, and a
+    # case-insensitive search for a word like "fisher" could hit one by chance and fail CI for
+    # no reason.
+    surfaces = {name: re.sub(r"data:image/[a-z]+;base64,[A-Za-z0-9+/=]+", "",
+                             read_text(os.path.join(ROOT, name)))
+                for name in ("post/index.md", "README.md", "dashboard.html", "index.html")
+                if os.path.exists(os.path.join(ROOT, name))}
+
+    # match on normalised text, so a withdrawn phrase cannot slip back in hyphenated or
+    # line-wrapped ("order-of-magnitude", "order of\nmagnitude") and pass.
+    def norm(s):
+        return re.sub(r"[\s\-]+", " ", s.lower())
+    alive = [(n, w) for n, txt in surfaces.items() for w in withdrawn if norm(w) in norm(txt)]
+    ck(f"no withdrawn claim survives on any published surface ({len(surfaces)} checked)", not alive)
+    if alive:
+        for n, w in alive:
+            print(f"    STILL PRESENT: {w!r} in {n}")
 
     nfail = sum(1 for _, ok in checks if not ok)
     print(f"\n{len(checks)} checks, {nfail} failed")

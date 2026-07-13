@@ -105,9 +105,9 @@ def fig_cadence():
 def fig_funding():
     edges = {w: dict(parent=ff, seed=sd) for ff, w, sd, n in
              read_json(os.path.join(ROOT, "data", "funding_edges.json"))["edges"]}
-    # only the wallets whose creation edges are actually in the committed dataset (the trace
-    # stops at 85zuUQ5w; anything above it is not in funding_edges, so it is not drawn).
-    chain = ["85zuUQ5w", "8gw6JyEW", "FMMs8SGx", "AtzmNv2w", "vwbEYDGU", "2eTkWQyt"]
+    # the full chain in the committed data, which is also the longest one cluster.json finds
+    # for this pool. The trace stops at H9c7D19P: it has no incoming edge in funding_edges.
+    chain = ["H9c7D19P", "85zuUQ5w", "8gw6JyEW", "FMMs8SGx", "AtzmNv2w", "vwbEYDGU", "2eTkWQyt"]
     full = {}
     for k in list(edges) + [e["parent"] for e in edges.values()]:
         full[k[:8]] = k
@@ -116,9 +116,14 @@ def fig_funding():
     # sanity: every drawn arrow must correspond to a real edge in the committed data
     for child, parent in zip(nodes[1:], nodes[:-1]):
         assert edges.get(child, {}).get("parent") == parent, ("funding chain edge missing", child, parent)
+    # colour by role, read from the data rather than by position: the wallets that actually
+    # trade the pool are orange, the ones that only funded them are grey.
+    bots = {r["wallet"] for r in read_json(os.path.join(ROOT, "data", "named_wallets.json"))
+            if r["pool"] == "TSLAX/orca"}
+    colors = [ORANGE if n in bots else GRAY for n in nodes]
     fig, ax = plt.subplots(figsize=(11, 3.2))
     x = list(range(len(nodes)))
-    ax.scatter(x, [0] * len(nodes), s=520, color=ORANGE, edgecolor="k", zorder=3)
+    ax.scatter(x, [0] * len(nodes), s=520, color=colors, edgecolor="k", zorder=3)
     for i in range(len(nodes) - 1):
         ax.annotate("", xy=(i + 1, 0), xytext=(i, 0),
                     arrowprops=dict(arrowstyle="-|>", color="#495057", lw=1.6))
@@ -129,9 +134,11 @@ def fig_funding():
         ax.text(i, -0.18, n[:6] + "..", ha="center", va="top", fontsize=8, family="monospace")
     ax.text(0, 0.30, "top of traced chain", ha="center", fontsize=8, color="#495057")
     ax.text(len(nodes) - 1, 0.30, "trades TSLAX", ha="center", fontsize=8, color="#495057")
+    ax.text(-0.45, -0.45, "grey: funded the fleet but does not trade the pool     "
+                          "orange: wash bot in TSLAX/Orca", fontsize=8, color="#495057")
     ax.set_ylim(-0.6, 0.6); ax.set_xlim(-0.5, len(nodes) - 0.5); ax.axis("off")
-    ax.set_title("TSLAX/Orca wash fleet: a peel chain of fresh wallets, each created and seeded by the last\n"
-                 "(seeds fall in near-constant ~4.5 USDT steps - automated sequential deployment)", fontsize=10.5)
+    ax.set_title("TSLAX/Orca wash fleet: a peel chain, every wallet after the first created and seeded by the one before it\n"
+                 "(seeds fall in steps of 4.3 to 4.6 USDT - automated sequential deployment)", fontsize=10.5)
     fig.tight_layout()
     fig.savefig(os.path.join(POST, "funding.png"), dpi=120); plt.close()
 

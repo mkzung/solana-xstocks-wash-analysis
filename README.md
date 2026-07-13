@@ -24,9 +24,10 @@ contain none; the flagged pools are dominated by them. The bots:
 
 - **buy and sell in matched size** (QQQX's busiest wallet: bought $10,657, sold $10,695),
 - **alternate buy/sell perfectly** over dozens of swaps, net position never leaving flat,
-- are a **coordinated fleet**: in TSLAX/Orca six fresh wallets form a creation chain, each
-  seeded ~500 USDT by the last in near-constant ~4.5 USDT steps; three SPYX wallets run
-  identical parameters; two wallets work SPYX in both its pools,
+- are a **coordinated fleet**: in TSLAX/Orca seven wallets form a creation chain - every wallet
+  after the first created and seeded, ~500 USDT, by the one before it, the six seeds falling in
+  steps of 4.3 to 4.6 USDT; three SPYX wallets run identical parameters; two wallets work SPYX in
+  both its pools,
 - **predate the pools** - a mix of aged wallets (some on-chain since 2025-10, with no xStock activity until recently) and same-day creations; funding wallets back to 2024-12,
 - **recur with full rotation**: re-sampled six hours later, three of the five pools are again washed and not one bot reappears (`persistence.py`) - bursts by a rotating wallet fleet.
 
@@ -39,14 +40,18 @@ It is the **pool, not the token**: QQQX is flagged in one Raydium pool and clean
 TSLAX is flagged on Orca and clean on Raydium. In the measured windows the bots round-tripped
 **$467k** of self-cancelling buy-and-sell (a hard, directly-observed floor). A 24h figure is an
 extrapolation and the two natural methods disagree by about threefold in aggregate (**$32M-$102M/day**
-across the five pools, and by an order of magnitude pool by pool, assuming the snapshot behaviour
-persists); the floor and the per-pool shares are the claims to rely on. Following the fourteen named wallets through their **full
+across the five pools), and by far more on an individual pool - widest on QQQX, where the share method
+implies **$26M** against **under $1M** from that pool's own observed bot rate. Both assume the snapshot
+behaviour persists, which the six-hour re-sample contradicts; the floor and the per-pool shares are the
+claims to rely on. Following the fourteen named wallets through their **full
 on-chain history** lifts the directly-observed matched total to **$5.6M** in 2,836 swaps (one
 wallet alone $2.9M) - more than ten times the in-window floor - with each wallet's washing
 concentrated in a burst of days, the rotating-fleet pattern again.
 
-The matched buy/sell are not arbitrage (both legs are in one pool, so there is no second price)
-and not aggregator routing (each address is a plain keypair, each trade its own transaction).
+The matched buy/sell capture no spread - both legs are in one pool, and the sells return about
+**99.3%** of what the buys cost, a sub-1% loss to fees. An offsetting leg on a venue this data does
+not cover cannot be excluded, but nothing in the pool pays for the round trip. It is not aggregator
+routing either: each address is a plain keypair, each trade its own transaction.
 Every claim is a named wallet and a transaction hash, checkable on [solscan.io](https://solscan.io).
 
 ## Reproduce
