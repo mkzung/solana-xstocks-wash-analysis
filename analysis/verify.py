@@ -7,7 +7,6 @@ import re
 import glob
 import bisect
 import statistics
-from math import comb
 from collections import defaultdict
 from datetime import datetime
 from io_util import read_json, read_text
@@ -139,7 +138,7 @@ def main():
         mints_ok = mints_ok and meta.get("mint") == official[meta["sym"]]
     ck("flagged pools trade the official Backed xStock mints (not lookalikes)", mints_ok)
 
-    # 10) the bimodal balance split is statistically significant (one-sided hypergeometric, stdlib only)
+    # 10) the bimodal balance split, DESCRIPTIVE. Not a significance test - see the note below.
     fl_ge = fl_tot = ct_ge = ct_tot = 0
     for p in glob.glob(os.path.join(RAWT, "*.json")):
         slug = os.path.basename(p).split(".")[0]
@@ -150,11 +149,20 @@ def main():
                     fl_tot += 1; fl_ge += ge
                 else:
                     ct_tot += 1; ct_ge += ge
-    Ntot, Ksucc, ndraw = fl_tot + ct_tot, fl_ge + ct_ge, fl_tot
-    pval = sum(comb(Ksucc, k) * comb(Ntot - Ksucc, ndraw - k)
-               for k in range(fl_ge, min(Ksucc, ndraw) + 1)) / comb(Ntot, ndraw)
-    print(f"        [bimodal split: {fl_ge}/{fl_tot} flagged vs {ct_ge}/{ct_tot} control at bal>=0.90, p={pval:.1e}]")
-    ck("bimodal balance split is significant (hypergeometric p < 1e-3)", pval < 1e-3)
+    # No p-value here, on purpose. An earlier revision computed a hypergeometric one and it was
+    # circular: screen.py FLAGS a pool on the USD share coming from wallets at balance >= 0.90,
+    # so comparing flagged against non-flagged pools on the COUNT of wallets at balance >= 0.90
+    # conditions on the statistic under test (a pool with no such wallets can never be flagged).
+    # The wallets in a pool are also a co-deployed fleet, not independent draws, which is what a
+    # hypergeometric assumes. What survives is the size of the gap, asserted on both sides below,
+    # and the a-priori controls carrying essentially none of these wallets (check 1).
+    fl_rate = fl_ge / fl_tot if fl_tot else 0.0
+    ct_rate = ct_ge / ct_tot if ct_tot else 0.0
+    print(f"        [bimodal split, descriptive: {fl_ge}/{fl_tot} flagged ({fl_rate:.0%}) vs "
+          f"{ct_ge}/{ct_tot} non-flagged ({ct_rate:.0%}) at bal>=0.90]")
+    # Both bounds are pinned so the check cannot go vacuous if either side drifts to zero.
+    ck("bimodal split is stark (flagged >= 40% balanced, non-flagged <= 15%)",
+       fl_tot > 0 and ct_tot > 0 and fl_rate >= 0.40 and ct_rate <= 0.15)
 
     # 11) the post's Appendix table lists EXACTLY the 10 largest distinct wallets by matched USD,
     #     so the table stays in sync with the committed data.
