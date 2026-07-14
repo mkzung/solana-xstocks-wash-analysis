@@ -488,9 +488,13 @@ def main():
        and says("at least two bots"))
 
     # the cost of the wash is the round trip's own loss, not a guessed fee schedule
-    ck("in-window cost = buys - sells = ~$1,550 on $236k in, about a third of a cent per dollar",
-       abs((tbu - tsu) - 1550) < 25 and round(tbu / 1000) == 236
-       and "$236,000" in post and "$1,550" in post and says("a third of a cent"))
+    # the two dollar figures the post PRINTS must subtract to the stated cost: $236,000 - $234,600
+    # reads as $1,400, not $1,550 (one was rounded to the thousand, the other to the hundred). Pin the
+    # exact totals so the printed numbers stay mutually consistent.
+    ck("printed buys $236,179 - sells $234,629 = $1,550 (the figures subtract to the stated cost)",
+       abs((tbu - tsu) - 1550) < 25 and round(tbu) == 236179 and round(tsu) == 234629
+       and "$236,179" in post and "$234,629" in post and "$1,550" in post
+       and (236179 - 234629) == 1550 and says("a third of a cent"))
 
     # "flat" is claimed in dollars AND in shares: net each bot's xStock units, per symbol
     TF = R["token_flatness"]
