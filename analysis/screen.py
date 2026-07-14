@@ -117,28 +117,32 @@ def main():
     max_nonflagged_bots = max((r["n_wash_bots"] for r in rows if not r["flag"]), default=0)
     min_flagged_bots = min((r["n_wash_bots"] for r in flagged), default=0)
 
-    # Threshold sensitivity, computed rather than asserted. Re-score every pool across a grid of
-    # (min_rt, balance) and record two things per cell: how many of the five flagged pools still
-    # clear the flag, and how many NON-flagged, non-control pools cross it (false positives). The
-    # honest reading: loosening balance to 0.80 admits false positives at every min_rt, while
-    # tightening to 0.95 only sheds thin true positives - so 0.90 sits in the band where the five
-    # separate from the rest with no false positive, not at a tuned edge.
+    # Threshold sensitivity, computed rather than asserted, and calibrated against the only ground
+    # truth this analysis has: the a-priori organic controls (WIF, JUP), fixed before scoring.
+    # "Non-flagged xStock pool" is not ground truth - it is the same detector's own output - so a
+    # non-flagged pool crossing at a looser cut cannot be called a false positive without circularity.
+    # A CONTROL crossing can: it was declared organic in advance. Re-score every pool across the grid
+    # and record, per cell, how many of the five flagged pools survive and which controls cross the
+    # flag. The honest reading: at 0.90 neither control is flagged; loosen the balance to 0.80 and the
+    # organic control WIF crosses at every min_rt; tighten to 0.95 and nothing new is flagged, only the
+    # thinnest true pools drop. So the cut errs toward missing wash, not inventing it.
     trades_by_slug = {r["slug"]: read_json(os.path.join(RAW, r["slug"] + ".json"))["trades"] for r in rows}
     flagged_slugs = {r["slug"] for r in flagged}
+    control_slugs = {r["slug"]: r["symbol"] for r in rows if r["is_control"]}
     sweep = []
     for bal in (0.80, 0.90, 0.95):
         for mr in (3, 5, 8, 10):
             fl = sum(1 for s in flagged_slugs if metrics(trades_by_slug[s], mr, bal)["score"] >= flag)
-            fp = sum(1 for r in rows if not r["flag"] and not r["is_control"]
-                     and metrics(trades_by_slug[r["slug"]], mr, bal)["score"] >= flag)
-            sweep.append(dict(min_rt=mr, balance=bal, flagged_above=fl, nonflagged_above=fp))
-    def fp_at(b):
-        return max(c["nonflagged_above"] for c in sweep if c["balance"] == b)
+            xc = sorted({sym for s, sym in control_slugs.items()
+                         if metrics(trades_by_slug[s], mr, bal)["score"] >= flag})
+            sweep.append(dict(min_rt=mr, balance=bal, flagged_above=fl, controls_crossing=xc))
+    def controls_crossing_at(b):
+        return sorted({sym for c in sweep if c["balance"] == b for sym in c["controls_crossing"]})
     threshold_sensitivity = dict(
         grid=sweep,
-        false_positives_at_080=fp_at(0.80),          # 2: the cut collapses when loosened
-        false_positives_at_090=fp_at(0.90),          # 0: no non-flagged pool ever crosses at 0.90
-        false_positives_at_095=fp_at(0.95),          # 0: tightening never adds a false positive
+        controls_crossing_at_080=controls_crossing_at(0.80),   # ["WIF"] - a real (a-priori) false flag
+        controls_crossing_at_090=controls_crossing_at(0.90),   # [] - neither control is flagged at 0.90
+        controls_crossing_at_095=controls_crossing_at(0.95),   # [] - tightening flags nothing new
         min_flagged_above_at_090=min(c["flagged_above"] for c in sweep if c["balance"] == 0.90),
         flagged_above_at_095_default_rt=next(c["flagged_above"] for c in sweep if c["balance"] == 0.95 and c["min_rt"] == 5))
 

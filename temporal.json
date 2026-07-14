@@ -209,6 +209,10 @@
       ]
     }
   },
+  "control_cadence": {
+    "JUP": [],
+    "WIF": []
+  },
   "matched_in_window_floor": 467498,
   "manufactured_24h_rate": 31684004,
   "manufactured_24h_share": 102432127,

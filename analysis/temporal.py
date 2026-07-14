@@ -108,7 +108,15 @@ def main():
         if not r.get("first_ts"):
             continue
         (bot_first if r["wallet"] in named else intermediary_first).append(r["first_ts"])
-    out = dict(snapshot="2026-06-21", pools=pools,
+    # The controls run through the same cadence routine, which only looks at wash-bot wallets
+    # (balanced heavy round-trippers). WIF and JUP contain none, so this is empty for both - which
+    # is what makes "no control wallet alternates on a fixed clock" reproducible rather than asserted.
+    control_cadence = {}
+    for fn in sorted(glob.glob(os.path.join(RAWT, "CTRL_*.json"))):
+        d = read_json(fn)
+        control_cadence[d["meta"]["sym"]] = cadence(d["trades"])
+
+    out = dict(snapshot="2026-06-21", pools=pools, control_cadence=control_cadence,
                matched_in_window_floor=round(total_manu_floor),
                manufactured_24h_rate=round(total_manu_rate), manufactured_24h_share=round(total_manu_share),
                earliest_bot=datetime.fromtimestamp(min(bot_first), timezone.utc).date().isoformat() if bot_first else None,

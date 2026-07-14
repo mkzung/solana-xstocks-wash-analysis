@@ -107,78 +107,88 @@
         "min_rt": 3,
         "balance": 0.8,
         "flagged_above": 5,
-        "nonflagged_above": 2
+        "controls_crossing": [
+          "WIF"
+        ]
       },
       {
         "min_rt": 5,
         "balance": 0.8,
         "flagged_above": 5,
-        "nonflagged_above": 2
+        "controls_crossing": [
+          "WIF"
+        ]
       },
       {
         "min_rt": 8,
         "balance": 0.8,
         "flagged_above": 5,
-        "nonflagged_above": 2
+        "controls_crossing": [
+          "WIF"
+        ]
       },
       {
         "min_rt": 10,
         "balance": 0.8,
         "flagged_above": 5,
-        "nonflagged_above": 2
+        "controls_crossing": [
+          "WIF"
+        ]
       },
       {
         "min_rt": 3,
         "balance": 0.9,
         "flagged_above": 5,
-        "nonflagged_above": 0
+        "controls_crossing": []
       },
       {
         "min_rt": 5,
         "balance": 0.9,
         "flagged_above": 5,
-        "nonflagged_above": 0
+        "controls_crossing": []
       },
       {
         "min_rt": 8,
         "balance": 0.9,
         "flagged_above": 5,
-        "nonflagged_above": 0
+        "controls_crossing": []
       },
       {
         "min_rt": 10,
         "balance": 0.9,
         "flagged_above": 4,
-        "nonflagged_above": 0
+        "controls_crossing": []
       },
       {
         "min_rt": 3,
         "balance": 0.95,
         "flagged_above": 5,
-        "nonflagged_above": 0
+        "controls_crossing": []
       },
       {
         "min_rt": 5,
         "balance": 0.95,
         "flagged_above": 4,
-        "nonflagged_above": 0
+        "controls_crossing": []
       },
       {
         "min_rt": 8,
         "balance": 0.95,
         "flagged_above": 4,
-        "nonflagged_above": 0
+        "controls_crossing": []
       },
       {
         "min_rt": 10,
         "balance": 0.95,
         "flagged_above": 3,
-        "nonflagged_above": 0
+        "controls_crossing": []
       }
     ],
-    "false_positives_at_080": 2,
-    "false_positives_at_090": 0,
-    "false_positives_at_095": 0,
+    "controls_crossing_at_080": [
+      "WIF"
+    ],
+    "controls_crossing_at_090": [],
+    "controls_crossing_at_095": [],
     "min_flagged_above_at_090": 4,
     "flagged_above_at_095_default_rt": 4
   },

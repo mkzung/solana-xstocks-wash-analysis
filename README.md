@@ -11,7 +11,7 @@ wiki. Companion to the centralized-exchange study
 
 ## Finding
 
-A detector scored the liquid xStock pools on Solana. Five pools exhibit a wash-trading
+A detector scored the liquid Solana pools of nine xStock tickers. Five pools exhibit a wash-trading
 signature (score 0.36 to 0.80); the a-priori organic controls (WIF, JUP) score zero, and
 every other pool, including the same xStocks in their other pools, scores at most 0.06.
 
@@ -26,7 +26,7 @@ contain none; the flagged pools are dominated by them. The bots:
 - alternate buy/sell perfectly over dozens of swaps, the net position sawtoothing between zero and about $300 and returning to flat after each round trip,
 - are coordinated where the funding says so: in TSLAX/Orca seven wallets form a creation chain - every wallet
   after the first created and seeded, ~500 USDT, by the one before it, the six seeds falling in
-  steps of 4.3 to 4.6 USDT; three SPYX wallets run identical parameters; counting only its own
+  steps of 4.3 to 4.6 USDT; three SPYX wallets run the same 7-and-7 buy/sell pattern for near-identical dollars; counting only its own
   transactions rather than the legs of routed swaps, one wallet round-trips SPYX in all three of
   its pools,
 - predate the pools - a mix of aged wallets (some on-chain since 2025-10, with no xStock activity until recently) and same-day creations; funding wallets back to 2024-12,

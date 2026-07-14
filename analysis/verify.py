@@ -631,15 +631,26 @@ def main():
     ck("the mechanism is described as returning to flat, not never holding a position",
        says("returns to flat after every pair") and says("ends every round trip flat"))
 
-    # the sensitivity sweep is COMPUTED (screen.json), not asserted: at 0.90 no false positive at any
-    # min_rt, at 0.80 two, and tightening to 0.95 only sheds true positives. The post must match.
+    # the sensitivity sweep is COMPUTED (screen.json) and judged against the ONLY ground truth here -
+    # the a-priori controls, not the detector's own non-flagged output. WIF (organic, fixed before
+    # scoring) crosses the flag at 0.80 but not at 0.90; neither control crosses at 0.90 or 0.95.
     TS = read_json(os.path.join(ROOT, "screen.json"))["threshold_sensitivity"]
-    ck("threshold sweep matches the post: 0.80 admits 2 false positives, 0.90 admits 0",
-       TS["false_positives_at_080"] == 2 and TS["false_positives_at_090"] == 0
-       and TS["false_positives_at_095"] == 0
-       and TS["flagged_above_at_095_default_rt"] == 4
-       and says("no non-flagged pool crosses the flag at any")
-       and says("loosening to 0.80") and says("four of the five survive"))
+    ck("threshold sweep vs the a-priori control: WIF crosses at 0.80, neither control at 0.90/0.95",
+       TS["controls_crossing_at_080"] == ["WIF"] and TS["controls_crossing_at_090"] == []
+       and TS["controls_crossing_at_095"] == [] and TS["flagged_above_at_095_default_rt"] == 4
+       and says("neither WIF nor JUP is flagged") and says("WIF crosses the flag at every")
+       and says("four of the five flagged pools survive"))
+
+    # the control-cadence claim is reproducible: temporal.py runs cadence over the controls, which
+    # have no wash bot, so it is empty for both - not asserted, computed.
+    TC = read_json(os.path.join(ROOT, "temporal.json"))["control_cadence"]
+    ck("control cadence empty for WIF and JUP (no wash bot to alternate), and the post says so",
+       TC.get("WIF") == [] and TC.get("JUP") == []
+       and says("returns an empty result for both"))
+
+    # the cadence/alternation is NOT claimed as the DN timeoftrade metric (which is second-of-minute)
+    ck("the post does not map cadence to the DN timeoftrade metric",
+       says("the dn `timeoftrade` is a second-of-minute histogram") and not says("cadence check is `timeoftrade`"))
 
     nfail = sum(1 for _, ok in checks if not ok)
     print(f"\n{len(checks)} checks, {nfail} failed")
