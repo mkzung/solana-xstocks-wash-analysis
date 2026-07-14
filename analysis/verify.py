@@ -493,9 +493,10 @@ def main():
 
     # the post pins this repo in three places; a half-bumped pin points at the wrong tree
     pins = re.findall(r"solana-xstocks-wash-analysis/(?:tree|blob)/([0-9a-f]{40})", post)
+    pins += re.findall(r"git checkout ([0-9a-f]{40})", post)      # the repro command pins it too
     short = re.findall(r"pinned at commit \[`([0-9a-f]{7,40})`\]", post)
     ck("the post's companion pins all point at ONE commit (no half-bumped pin)",
-       len(pins) >= 2 and len(set(pins)) == 1 and len(short) == 1 and pins[0].startswith(short[0]))
+       len(pins) >= 3 and len(set(pins)) == 1 and len(short) == 1 and pins[0].startswith(short[0]))
 
     # a retraction that only touches the post is not a retraction: the Fisher p-value lived on in
     # dashboard.html and index.html for a day. Anything withdrawn goes here and stays dead.
