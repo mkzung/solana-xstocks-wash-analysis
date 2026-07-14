@@ -7,6 +7,8 @@ than one pool and sibling wallets that run identical parameters.
 """
 import os
 import sys
+import glob
+import statistics
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -72,6 +74,106 @@ def main():
 
     chains = {slug: [chain(b["wallet"]) for b in pools[slug]["bots"]] for slug in FLAGGED}
     multi = {w: ps for w, ps in wallet_pools.items() if len(set(ps)) > 1}
+
+    # every pool tape, not just the flagged ones: a routed swap can land in any of them
+    raw = {os.path.basename(p)[:-5]: read_json(p)["trades"]
+           for p in glob.glob(os.path.join(ROOT, "data", "raw", "trades", "*.json"))}
+
+    # Aggregator routing: one signed transaction split across pools shows up in several tapes, so
+    # a wallet can look like it trades several pools when one routed swap put it there. Measure it,
+    # and keep it apart from what would be arbitrage: legs on opposite sides in the same tx.
+    tx_legs = defaultdict(list)
+    for slug, trades in raw.items():
+        for t in trades:
+            tx_legs[t["tx_hash"]].append((slug, str(t.get("kind", "")).lower(),
+                                          float(t["volume_in_usd"]), t.get("tx_from_address")))
+    def n_pools(tx):
+        return len({s for s, _k, _u, _w in tx_legs[tx]})
+
+    bot_usd = bot_routed_usd = 0.0
+    bot_multi_tx, bot_mixed_tx = set(), set()
+    own_pools = defaultdict(set)          # pools a wallet reaches WITHOUT a routed leg
+    for slug, trades in raw.items():
+        for t in trades:
+            w = t.get("tx_from_address")
+            if w not in all_bots:
+                continue
+            usd, tx = float(t["volume_in_usd"]), t["tx_hash"]
+            bot_usd += usd
+            if n_pools(tx) > 1:
+                bot_routed_usd += usd
+                bot_multi_tx.add(tx)
+                if len({k for _s, k, _u, _w in tx_legs[tx]}) > 1:
+                    bot_mixed_tx.add(tx)
+            else:
+                own_pools[w].add(slug)
+    routing = dict(
+        multi_pool_tx_in_snapshot=sum(1 for tx in tx_legs if n_pools(tx) > 1),
+        total_tx_in_snapshot=len(tx_legs),
+        # legs on opposite sides = cross-pool arbitrage. It exists here; it is just not the bots'.
+        mixed_side_tx_in_snapshot=sum(1 for tx in tx_legs if n_pools(tx) > 1
+                                      and len({k for _s, k, _u, _w in tx_legs[tx]}) > 1),
+        bot_multi_pool_tx=len(bot_multi_tx),
+        bot_mixed_side_tx=len(bot_mixed_tx),
+        bot_routed_usd_share=round(bot_routed_usd / bot_usd, 4) if bot_usd else 0.0,
+        # wallets reaching several pools in their own transactions, not as legs of one routed swap
+        multi_pool_by_own_tx={w: sorted(p) for w, p in own_pools.items() if len(p) > 1})
+
+    # A wallet can arb two pools minutes apart, with no transaction straddling both. That leaves
+    # it buy-heavy in one and sell-heavy in the other, so check for that directly.
+    side_usd = defaultdict(lambda: [0.0, 0.0])
+    for slug, trades in raw.items():
+        for t in trades:
+            w = t.get("tx_from_address")
+            if w not in all_bots:
+                continue
+            usd = float(t["volume_in_usd"])
+            side_usd[(w, slug)][0 if str(t.get("kind", "")).lower().startswith("buy") else 1] += usd
+    lean = defaultdict(dict)              # wallet -> pool -> signed imbalance (+ = buy-heavy)
+    for (w, slug), (b, s) in side_usd.items():
+        if b + s < 500:                   # ignore dust legs
+            continue
+        lean[w][slug] = round((b - s) / max(b, s), 4)
+    directional = {w: v for w, v in lean.items()
+                   if any(x > 0.10 for x in v.values()) and any(x < -0.10 for x in v.values())}
+    routing["cross_pool_directional_bots"] = sorted(directional)
+
+    # the fleet count must not rest on routing: recount without wallets that only appear as legs
+    own_bots = {}
+    for slug in FLAGGED:
+        keep = []
+        for b in pools[slug]["bots"]:
+            w = b["wallet"]
+            if any(t.get("tx_from_address") == w and n_pools(t["tx_hash"]) == 1 for t in raw[slug]):
+                keep.append(w)
+        own_bots[pools[slug]["key"]] = keep
+    routing["own_tx_bots_per_flagged_pool"] = {k: len(v) for k, v in own_bots.items()}
+    routing["min_own_tx_bots_in_a_flagged_pool"] = min(len(v) for v in own_bots.values())
+    routing["per_pool_imbalance"] = {f"{w[:8]}/{s.split('__')[0]}/{s.split('__')[1]}": v
+                                     for w, d in lean.items() for s, v in d.items()}
+
+    # equal dollars in and out do not prove equal shares in and out. The tape carries the token
+    # amounts, so net each bot's xStock units per symbol and compare with what it turned over.
+    units = defaultdict(lambda: [0.0, 0.0])   # (wallet, symbol) -> [net, gross]
+    for slug, trades in raw.items():
+        sym = slug.split("__")[0]
+        for t in trades:
+            w = t.get("tx_from_address")
+            if w not in all_bots:
+                continue
+            got = float(t.get("to_token_amount") or 0)     # units received on a buy
+            gave = float(t.get("from_token_amount") or 0)  # units given up on a sell
+            if str(t.get("kind", "")).lower().startswith("buy"):
+                units[(w, sym)][0] += got; units[(w, sym)][1] += got
+            else:
+                units[(w, sym)][0] -= gave; units[(w, sym)][1] += gave
+    resid = {f"{w[:8]}/{sym}": round(abs(net) / gross, 4)
+             for (w, sym), (net, gross) in units.items() if gross > 0}
+    routing["token_flatness"] = dict(
+        worst_abs_net_over_gross=max(resid.values()),
+        median_abs_net_over_gross=round(statistics.median(resid.values()), 4),
+        per_bot=dict(sorted(resid.items(), key=lambda kv: -kv[1])))
+    write_json(routing, os.path.join(ROOT, "routing.json"), indent=2)
 
     # sibling fleets: bots in the same pool with the same trade count and seed within a tight band
     siblings = {}

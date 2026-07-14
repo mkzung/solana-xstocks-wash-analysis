@@ -17,6 +17,7 @@ T = read_json(os.path.join(ROOT, "temporal.json"))
 N = read_json(os.path.join(ROOT, "data", "named_wallets.json"))
 P = read_json(os.path.join(ROOT, "persistence.json"))
 L = read_json(os.path.join(ROOT, "lifetime.json"))
+R = read_json(os.path.join(ROOT, "routing.json"))
 
 
 def b64(name):
@@ -45,9 +46,12 @@ for w in N:
     k = w["wallet"]
     if k not in _best or (w["buy_usd"] + w["sell_usd"]) > (_best[k]["buy_usd"] + _best[k]["sell_usd"]):
         _best[k] = w
+# the display string "SPYX/orca" is the same for two DIFFERENT Orca pools, so show the pool id too
 wrows = "".join(
-    '<tr><td class="txt">%s</td><td class="mono">%s</td><td class="num">%d / %d</td><td class="num">$%s / $%s</td></tr>'
-    % (w["pool"], w["wallet"], w["buys"], w["sells"], f'{w["buy_usd"]:,}', f'{w["sell_usd"]:,}')
+    '<tr><td class="txt">%s <span class="mono" style="color:var(--muted)">%s</span></td>'
+    '<td class="mono">%s</td><td class="num">%d / %d</td><td class="num">$%s / $%s</td></tr>'
+    % (w["pool"], w["pool_id"][:8], w["wallet"], w["buys"], w["sells"],
+       f'{w["buy_usd"]:,}', f'{w["sell_usd"]:,}')
     for w in sorted(_best.values(), key=lambda r: -(r["buy_usd"] + r["sell_usd"])))
 
 CSS = """
@@ -91,9 +95,10 @@ Free Dexscreener + GeckoTerminal + Solana RPC + Helius data | snapshot 2026-06-2
 </div>
 <section class="keyfindings"><h2>What the data says</h2><ol>
 <li><b>Five pools flagged, a clean gap.</b> The wash score (USD share from balanced heavy round-trippers) is 0.36 to 0.80 on the five flagged pools; the two a-priori organic controls (WIF, JUP) score zero, and every other pool - including the same xStocks in their other pools - scores at most {S['max_nonflagged_score']:.2f}.</li>
-<li><b>The signature is matched buys and sells.</b> Organic pools contain zero balanced heavy round-trippers; the flagged pools are dominated by them. On QQQX the busiest wallet bought $10,657 and sold $10,695 across 36 buys and 36 sells.</li>
+<li><b>The signature is matched buys and sells.</b> Organic pools contain zero balanced heavy round-trippers; the flagged pools are dominated by them. On QQQX the busiest wallet bought $10,657 and sold $10,695 across 36 buys and 36 sells. The tokens come back too: netting each bot's xStock units leaves a median {R['token_flatness']['median_abs_net_over_gross']:.2%} of the units it turned over.</li>
+<li><b>Not cross-pool arbitrage, though the swaps are routed.</b> No bot transaction buys in one pool and sells in another, while {R['mixed_side_tx_in_snapshot']} transactions in the snapshot do exactly that, by other wallets - and no bot is buy-heavy in one pool while sell-heavy in another, which is what arbitraging two pools minutes apart would leave behind. The bots' swaps are often split by an aggregator across pools inside one transaction ({R['bot_routed_usd_share']:.0%} of their volume), so a pool tape shows a leg, not a whole swap - the wallet still signs and pays for its own trade.</li>
 <li><b>The bots run on a robot's clock.</b> That wallet's 72 swaps alternate buy/sell with no exception; its net position sawtooths and never leaves flat. Three TSLAX wallets run the same 4-5 second cadence back-to-back.</li>
-<li><b>A coordinated fleet.</b> Seven TSLAX wallets form a creation chain - the five wash bots and the two that funded them. Every wallet after the first was created and seeded, ~500 USDT, by the one before it; the six seeds fall in steps of 4.3 to 4.6 USDT. Three SPYX wallets run identical parameters; two wallets wash SPYX in both its pools.</li>
+<li><b>A coordinated fleet.</b> Seven TSLAX wallets form a creation chain - the five wash bots and the two that funded them. Every wallet after the first was created and seeded, ~500 USDT, by the one before it; the six seeds fall in steps of 4.3 to 4.6 USDT. Three SPYX wallets run identical parameters; counting only its own transactions, not the legs of routed swaps, one wallet round-trips SPYX in all three of its pools.</li>
 <li><b>It is the pool, not the token.</b> QQQX is flagged in one Raydium pool and clean in another; TSLAX is flagged on Orca and clean on Raydium. The bots predate the pools (earliest {T['earliest_bot']}).</li>
 <li><b>It recurs, the wallets do not.</b> Re-sampled six hours later, {P['still_flagged']} of {P['n_pools']} pools are again actively washed and not one bot reappears ({P['total_wallet_overlap']} wallet overlap) - bursts of matched round-tripping by a rotating wallet fleet.</li>
 <li><b>The snapshot caught a sliver.</b> Across the fourteen wallets' full on-chain history the directly-observed matched total is ${L['total_matched_usd']/1e6:.1f}M in {L['total_swaps']:,} swaps (one wallet alone ${L['max_bot_matched_usd']/1e6:.1f}M), each wallet's washing concentrated in a multi-day burst - more than ten times the in-window floor.</li>

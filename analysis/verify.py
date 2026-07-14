@@ -179,7 +179,15 @@ def main():
     listed = set(re.findall(r"`([1-9A-HJ-NP-Za-km-z]{40,44})`", appendix))
     ck("post Appendix lists exactly the 10 largest distinct wallets by matched USD", listed == top10)
 
-    post = read_text(os.path.join(ROOT, "post", "index.md"))
+    # assert on the claim, not the markup or the wording: strip emphasis, fold case and spacing,
+    # and match the shortest phrase that carries the fact. A check that breaks when a sentence is
+    # rephrased is testing the prose, not the analysis.
+    post_raw = read_text(os.path.join(ROOT, "post", "index.md"))
+    post = post_raw.replace("**", "").replace("*", "")
+    _post_n = " ".join(post.lower().split())
+
+    def says(*phrases):
+        return all(" ".join(p.lower().split()) in _post_n for p in phrases)
     T = read_json(os.path.join(ROOT, "temporal.json"))
 
     # 12) Appendix table NUMBERS (buys/sells/USD), not just the wallet set, match the data.
@@ -203,7 +211,7 @@ def main():
     # 13) PnL: bot sells return the post's stated % of bot buys (a small net loss to fees)
     tbu = sum(r[3] for r in allrows); tsu = sum(r[4] for r in allrows)
     pnl = round(tsu / tbu * 100, 1)
-    mp = re.search(r"sells return about \*\*([\d.]+)%\*\*", post)
+    mp = re.search(r"sells return about ([\d.]+)%", post)
     ck("post PnL (sells/buys %) matches recomputed", bool(mp) and float(mp.group(1)) == pnl)
 
     # 14) the $467k matched floor: raw sum(2*min) == temporal.json == post. temporal.py sums
@@ -219,7 +227,7 @@ def main():
     # 16) persistence: 3 of 5 still flag, zero wallet overlap (the rotating-fleet claim)
     P = read_json(os.path.join(ROOT, "persistence.json"))
     ck("persistence: 3/5 re-flag, 0 wallet overlap (matches post)",
-       P["still_flagged"] == 3 and P["total_wallet_overlap"] == 0 and "Three of the five pools" in post)
+       P["still_flagged"] == 3 and P["total_wallet_overlap"] == 0 and says("three of the five pools"))
 
     # 16b) the post quotes per-pool bot counts (5, 2, 5, 3, 3) that sum to 18 appearances while
     #      naming 14 distinct wallets, because two wallets trade more than one pool. Recompute all
@@ -230,8 +238,8 @@ def main():
     multi = sum(1 for _w, n in Counter(r["wallet"] for r in NW).items() if n > 1)
     ck("bot appearances (18) vs distinct wallets (14), two of them multi-pool - and the post says so",
        appearances == 18 and distinct == 14 and multi == 2
-       and "add up to eighteen" in post and "is **fourteen**" in post
-       and "two wallets trade in more than one pool" in post)
+       and says("eighteen") and says("fourteen")
+       and says("two wallets trade in more than one pool"))
 
     # 17) funding chain: the exact six seeds match the edges and the post. The chain the post
     #     tells must also BE the longest one cluster.py finds for the pool - the figure used to
@@ -275,7 +283,7 @@ def main():
             if b >= 5 and s >= 5 and max(bu, su) > 0:
                 (fb if slug in FLAGGED else cb).append(min(bu, su) / max(bu, su))
     ck("median balance 0.94 flagged / 0.66 control (matches post)",
-       round(statistics.median(fb), 2) == 0.94 and round(statistics.median(cb), 2) == 0.66 and "0.94 versus 0.66" in post)
+       round(statistics.median(fb), 2) == 0.94 and round(statistics.median(cb), 2) == 0.66 and says("0.94", "0.66"))
 
     # 19) wallet-age dates: earliest named bot Oct 2025, earliest funder Dec 2024
     ck("earliest bot Oct-2025 / funder Dec-2024 (temporal.json matches post)",
@@ -321,7 +329,7 @@ def main():
        and round(L["max_bot_matched_usd"] / 1e6, 1) == 2.9
        and "$5.6M" in post and "2,836" in post and "$2.9M" in post)
     ck("lifetime washing is bursty (max bot span ~4 days, matches post)",
-       4 < L["max_span_days"] < 5 and "just over four days" in post)
+       4 < L["max_span_days"] < 5 and says("four days"))
 
     # 23) Appendix lifetime-matched column matches lifetime.json per wallet
     life_by_w = {b["wallet"]: b["matched_usd"] for b in L["bots"]}
@@ -409,33 +417,98 @@ def main():
     min_flagged_bots = min(len(bs) for bs in flagged_bots.values())
     ck("full-window fleet discriminates (non-flagged <=1 bot, flagged >=2); sub-window share confound real",
        full_nonflagged_max <= 1 and min_flagged_bots >= 2 and n_above_flag == 4
-       and "sustained across the whole snapshot" in post and "four of the non-flagged" in post)
+       and says("sustained across the whole snapshot") and says("four of the non-flagged"))
 
-    # The post pins this repo in three places (the short SHA, the tree link, the named_wallets
-    # link). They have to be bumped together: a half-bumped pin sends the reader to a tree that
-    # does not match the post, which is the whole point of pinning. Cannot check the SHA is
-    # current from offline, but can check the three agree.
+    # Aggregator routing: one signed transaction can be split across pools, so a pool tape shows a
+    # leg, not a whole swap. Recompute the three claims that follow from it.
+    R = read_json(os.path.join(ROOT, "routing.json"))
+    ck("routed share of bot volume (35%) and the routing caveat are in the post",
+       round(R["bot_routed_usd_share"] * 100) == 35 and "35%" in post
+       and says("split by an aggregator"))
+    ck("no bot transaction buys one pool and sells another; 38 others in the snapshot do",
+       R["bot_mixed_side_tx"] == 0 and R["bot_multi_pool_tx"] == 60
+       and R["mixed_side_tx_in_snapshot"] == 38
+       and "38" in post and "60" in post)
+    own = R["multi_pool_by_own_tx"]
+    ck("the post names the wallets that reach several pools in their OWN transactions",
+       len(own) == 2 and all(any(w.startswith(p) for w in own) for p in ("HpcHy6dN", "33X9awze"))
+       and "33X9awze" in post and says("leg of a routed swap"))
+
+    # sequential arbitrage would leave a wallet buy-heavy in one pool and sell-heavy in another
+    ck("no bot is buy-heavy in one pool and sell-heavy in another (sequential arbitrage)",
+       R["cross_pool_directional_bots"] == []
+       and says("buy-heavy in one pool"))
+
+    # strike out wallets that reach a pool only as a routed leg: the fleet count must survive
+    ck("fleet count survives routing: every flagged pool keeps >=2 bots with their own txs",
+       R["min_own_tx_bots_in_a_flagged_pool"] >= 2
+       and len(R["own_tx_bots_per_flagged_pool"]) == 5
+       and says("at least two bots"))
+
+    # the cost of the wash is the round trip's own loss, not a guessed fee schedule
+    ck("in-window cost = buys - sells = ~$1,550 on $236k in, about a third of a cent per dollar",
+       abs((tbu - tsu) - 1550) < 25 and round(tbu / 1000) == 236
+       and "$236,000" in post and "$1,550" in post and says("a third of a cent"))
+
+    # "flat" is claimed in dollars AND in shares: net each bot's xStock units, per symbol
+    TF = R["token_flatness"]
+    ck("bots end flat in TOKEN units too (median 0.01%, worst 4.6%), as the post says",
+       round(TF["median_abs_net_over_gross"] * 100, 2) <= 0.01
+       and round(TF["worst_abs_net_over_gross"] * 100, 1) == 4.6
+       and "median 0.01%" in post and "4.6%" in post)
+
+    # lifetime totals must not depend on netting one xStock against another
+    ck("lifetime matched is identical computed within each symbol ($5,579,149)",
+       L["total_matched_usd"] == L["total_matched_usd_within_symbol"] == 5579149
+       and "5,579,149" in post)
+
+    # every address the post sends a reader to must exist in the data (hand-typed ones do not)
+    known = set()
+    for pth in glob.glob(os.path.join(RAWT, "*.json")):
+        d = read_json(pth)
+        known.add(d["pool"]); known.add(d["meta"]["mint"])
+        known.update(t["tx_from_address"] for t in d["trades"] if t.get("tx_from_address"))
+    for f, w, _s, _n in read_json(os.path.join(ROOT, "data", "funding_edges.json"))["edges"]:
+        known.add(f); known.add(w)
+    known.update(r["wallet"] for r in read_json(os.path.join(ROOT, "data", "named_wallets.json")))
+    # strip the pin links first: a hex SHA is very nearly base58
+    body = re.sub(r"https://github\.com/\S+", "", post)
+    addrs = set(re.findall(r"[1-9A-HJ-NP-Za-km-z]{32,44}", body))
+    orphans = sorted(addrs - known)
+    ck(f"every full address in the post ({len(addrs)}), linked or not, exists in the committed data",
+       not orphans)
+    if orphans:
+        for a in orphans:
+            print(f"    ORPHAN ADDRESS (not in any committed file): {a}")
+
+    # a typo in an 8-char short form points the reader at nothing, and nothing else would catch it
+    shorts = set(re.findall(r"`([1-9A-HJ-NP-Za-km-z]{8})`", body))
+    prefixes = {a[:8] for a in known}
+    bad_shorts = sorted(shorts - prefixes)
+    ck(f"every 8-char short address in the post ({len(shorts)}) prefixes a real one",
+       not bad_shorts)
+    if bad_shorts:
+        for a in bad_shorts:
+            print(f"    SHORT FORM MATCHES NOTHING: `{a}`")
+
+    # the post pins this repo in three places; a half-bumped pin points at the wrong tree
     pins = re.findall(r"solana-xstocks-wash-analysis/(?:tree|blob)/([0-9a-f]{40})", post)
     short = re.findall(r"pinned at commit \[`([0-9a-f]{7,40})`\]", post)
     ck("the post's companion pins all point at ONE commit (no half-bumped pin)",
        len(pins) >= 2 and len(set(pins)) == 1 and len(short) == 1 and pins[0].startswith(short[0]))
 
-    # Withdrawn claims must die on EVERY published surface, not just in the post. The circular
-    # Fisher p-value was cut from the post but survived for a day in dashboard.html and index.html,
-    # which are the GitHub Pages site. Anything retracted goes in this list and stays dead.
+    # a retraction that only touches the post is not a retraction: the Fisher p-value lived on in
+    # dashboard.html and index.html for a day. Anything withdrawn goes here and stays dead.
     withdrawn = ["Fisher", "hypergeom", "8e-5", "1 in 12,000", "statistically significant",
                  "order of magnitude", "runs continuously", "Two figures bound", "is an LP",
                  "Six TSLAX", "six-wallet", "~4.5 USDT"]
-    # strip the embedded base64 images first: they are ~680kB of [A-Za-z0-9+/] per page, and a
-    # case-insensitive search for a word like "fisher" could hit one by chance and fail CI for
-    # no reason.
+    # strip the base64 images: 680kB of [A-Za-z0-9+/] would hit "fisher" by chance eventually
     surfaces = {name: re.sub(r"data:image/[a-z]+;base64,[A-Za-z0-9+/=]+", "",
                              read_text(os.path.join(ROOT, name)))
                 for name in ("post/index.md", "README.md", "dashboard.html", "index.html")
                 if os.path.exists(os.path.join(ROOT, name))}
 
-    # match on normalised text, so a withdrawn phrase cannot slip back in hyphenated or
-    # line-wrapped ("order-of-magnitude", "order of\nmagnitude") and pass.
+    # normalise, so a phrase cannot slip back in hyphenated or line-wrapped
     def norm(s):
         return re.sub(r"[\s\-]+", " ", s.lower())
     alive = [(n, w) for n, txt in surfaces.items() for w in withdrawn if norm(w) in norm(txt)]

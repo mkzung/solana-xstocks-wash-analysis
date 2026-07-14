@@ -1,0 +1,70 @@
+{
+  "multi_pool_tx_in_snapshot": 196,
+  "total_tx_in_snapshot": 4550,
+  "mixed_side_tx_in_snapshot": 38,
+  "bot_multi_pool_tx": 60,
+  "bot_mixed_side_tx": 0,
+  "bot_routed_usd_share": 0.3549,
+  "multi_pool_by_own_tx": {
+    "HpcHy6dNYRotVim8HPpZmsfnekviyv1sRcX1C533SYky": [
+      "QQQX__raydium__EibwWLHy",
+      "SPYX__orca__6m6UoVxn",
+      "SPYX__orca__gef4pD5g",
+      "SPYX__raydium__4pCZCVEi"
+    ],
+    "33X9awzeff9PbKBpQYaf1ZJTp8Ksxv8Fne3WxajLpwM7": [
+      "SPYX__orca__6m6UoVxn",
+      "SPYX__orca__gef4pD5g",
+      "SPYX__raydium__4pCZCVEi"
+    ]
+  },
+  "cross_pool_directional_bots": [],
+  "own_tx_bots_per_flagged_pool": {
+    "TSLAX/orca/9p7abUFv": 5,
+    "QQQX/raydium/EibwWLHy": 2,
+    "SPYX/raydium/4pCZCVEi": 4,
+    "SPYX/orca/gef4pD5g": 2,
+    "SPYX/orca/6m6UoVxn": 2
+  },
+  "min_own_tx_bots_in_a_flagged_pool": 2,
+  "per_pool_imbalance": {
+    "33X9awze/SPYX/raydium": -0.299,
+    "33X9awze/SPYX/orca": -0.3346,
+    "3T1YdUjo/SPYX/raydium": 0.0003,
+    "B2ES7Uzw/SPYX/raydium": 0.0003,
+    "78jkE1hP/SPYX/raydium": 0.0003,
+    "HpcHy6dN/SPYX/raydium": -0.0116,
+    "HpcHy6dN/SPYX/orca": 0.0153,
+    "6G11Z8xR/SPYX/raydium": 0.0069,
+    "6G11Z8xR/SPYX/orca": -0.0123,
+    "964TGnJn/SPYX/orca": 0.082,
+    "H2iJUNtd/QQQX/raydium": -0.0057,
+    "C6FyA84D/QQQX/raydium": -0.0035,
+    "2eTkWQyt/TSLAX/orca": 0.0003,
+    "vwbEYDGU/TSLAX/orca": 0.0004,
+    "AtzmNv2w/TSLAX/orca": 0.0004,
+    "FMMs8SGx/TSLAX/orca": -0.0094,
+    "8gw6JyEW/TSLAX/orca": -0.0104
+  },
+  "token_flatness": {
+    "worst_abs_net_over_gross": 0.0457,
+    "median_abs_net_over_gross": 0.0001,
+    "per_bot": {
+      "33X9awze/SPYX": 0.0457,
+      "964TGnJn/SPYX": 0.0429,
+      "8gw6JyEW/TSLAX": 0.0053,
+      "FMMs8SGx/TSLAX": 0.005,
+      "H2iJUNtd/QQQX": 0.0029,
+      "C6FyA84D/QQQX": 0.0018,
+      "HpcHy6dN/SPYX": 0.0006,
+      "3T1YdUjo/SPYX": 0.0001,
+      "B2ES7Uzw/SPYX": 0.0001,
+      "78jkE1hP/SPYX": 0.0001,
+      "6G11Z8xR/SPYX": 0.0,
+      "HpcHy6dN/QQQX": 0.0,
+      "2eTkWQyt/TSLAX": 0.0,
+      "vwbEYDGU/TSLAX": 0.0,
+      "AtzmNv2w/TSLAX": 0.0
+    }
+  }
+}

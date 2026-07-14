@@ -16,6 +16,11 @@ import matplotlib.pyplot as plt
 from metrics_lib import metrics
 from io_util import read_json, write_json
 
+# matplotlib stamps a "Software" tag and a creation date into the PNG, so a rerun of the
+# pipeline produces byte-different files with identical pixels. Strip both: "rerun and get the
+# same tree" should be literally true in a repo whose whole claim is reproducibility.
+PNG_META = {"Software": None, "Creation Time": None}
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 RAW = os.path.join(ROOT, "data", "raw", "trades")
@@ -166,7 +171,7 @@ def main():
     ax.legend()
     fig.tight_layout()
     os.makedirs(os.path.join(ROOT, "post"), exist_ok=True)
-    fig.savefig(os.path.join(ROOT, "post", "screen.png"), dpi=120)
+    fig.savefig(os.path.join(ROOT, "post", "screen.png"), dpi=120, metadata=PNG_META)
     print("\nwrote screen.json + data/screen.csv + post/screen.png")
 
 

@@ -32,9 +32,17 @@ def main():
         bu = sum(x["usd"] for x in s if x["side"] == "buy")
         su = sum(x["usd"] for x in s if x["side"] == "sell")
         ts = [x["ts"] for x in s if x["ts"]]
+        # 2 * min(buys, sells) over all swaps could net a buy of one xStock against a sale of
+        # another. Carry the per-symbol figure too: if they agree, no cross-asset netting happened.
+        matched_within = 0.0
+        for sym in {x["sym"] for x in s}:
+            leg = [x for x in s if x["sym"] == sym]
+            matched_within += 2 * min(sum(x["usd"] for x in leg if x["side"] == "buy"),
+                                      sum(x["usd"] for x in leg if x["side"] == "sell"))
         bots.append(dict(
             wallet=d["wallet"], n_swaps=len(s), buys=nb, sells=len(s) - nb,
             buy_usd=round(bu), sell_usd=round(su), matched_usd=round(2 * min(bu, su)),
+            matched_usd_within_symbol=round(matched_within),
             span_days=round((max(ts) - min(ts)) / 86400, 1) if ts else 0.0,
             first=min(ts) if ts else None, last=max(ts) if ts else None,
             syms="+".join(sorted(set(x["sym"] for x in s)))))
@@ -43,6 +51,7 @@ def main():
         snapshot="2026-06-21", n_bots=len(bots),
         total_swaps=sum(b["n_swaps"] for b in bots),
         total_matched_usd=sum(b["matched_usd"] for b in bots),
+        total_matched_usd_within_symbol=sum(b["matched_usd_within_symbol"] for b in bots),
         max_bot=bots[0]["wallet"] if bots else None,
         max_bot_matched_usd=bots[0]["matched_usd"] if bots else 0,
         max_span_days=max((b["span_days"] for b in bots), default=0),

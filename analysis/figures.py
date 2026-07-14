@@ -15,6 +15,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
+# matplotlib stamps a Software tag and a date into the PNG, so a rerun writes byte-different
+# files with identical pixels. Strip both, so rerunning the pipeline leaves the tree clean.
+PNG_META = {"Software": None, "Creation Time": None}
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 RAWT = os.path.join(ROOT, "data", "raw", "trades")
@@ -74,7 +78,7 @@ def fig_signature():
         ax.set_title(title, fontsize=11); ax.legend(fontsize=8, loc="upper left")
     fig.suptitle("Wash bots buy and sell in matched size (on the diagonal); organic wallets do not", fontsize=12)
     fig.tight_layout()
-    fig.savefig(os.path.join(POST, "signature.png"), dpi=120); plt.close()
+    fig.savefig(os.path.join(POST, "signature.png"), dpi=120, metadata=PNG_META); plt.close()
 
 
 # ---- 2. cadence: perfect alternation + flat net position ----
@@ -98,7 +102,7 @@ def fig_cadence():
     a2.set_ylabel("cumulative net position (USD)"); a2.set_xlabel("minutes from first swap")
     a2.set_title("Net position never departs from flat: volume is manufactured, no position is taken", fontsize=10.5)
     fig.tight_layout()
-    fig.savefig(os.path.join(POST, "cadence.png"), dpi=120); plt.close()
+    fig.savefig(os.path.join(POST, "cadence.png"), dpi=120, metadata=PNG_META); plt.close()
 
 
 # ---- 3. funding peel chain ----
@@ -140,7 +144,7 @@ def fig_funding():
     ax.set_title("TSLAX/Orca wash fleet: a peel chain, every wallet after the first created and seeded by the one before it\n"
                  "(seeds fall in steps of 4.3 to 4.6 USDT - automated sequential deployment)", fontsize=10.5)
     fig.tight_layout()
-    fig.savefig(os.path.join(POST, "funding.png"), dpi=120); plt.close()
+    fig.savefig(os.path.join(POST, "funding.png"), dpi=120, metadata=PNG_META); plt.close()
 
 
 # ---- 4. measured wash share per pool (the robust quantity) + matched-USD floor ----
@@ -163,7 +167,7 @@ def fig_manufactured():
                  f"Hard floor across all five: ${T['matched_in_window_floor']/1e3:.0f}k matched; "
                  f"24h extrapolation is a wide range (${T['manufactured_24h_rate']/1e6:.0f}M-${T['manufactured_24h_share']/1e6:.0f}M), see text", fontsize=10)
     fig.tight_layout()
-    fig.savefig(os.path.join(POST, "manufactured.png"), dpi=120); plt.close()
+    fig.savefig(os.path.join(POST, "manufactured.png"), dpi=120, metadata=PNG_META); plt.close()
 
 
 # ---- 5. balance distribution of heavy round-trippers: the bimodality that justifies the 0.90 cut ----
@@ -194,7 +198,7 @@ def fig_balance():
                  "in every other pool they are directional. The 0.90 cut falls in the empty gap.", fontsize=10.5)
     ax.legend(loc="upper left", fontsize=8)
     fig.tight_layout()
-    fig.savefig(os.path.join(POST, "balance.png"), dpi=120); plt.close()
+    fig.savefig(os.path.join(POST, "balance.png"), dpi=120, metadata=PNG_META); plt.close()
 
 
 # ---- 6. lifetime vs in-window matched per wallet: the snapshot caught a sliver ----
@@ -219,7 +223,7 @@ def fig_lifetime():
     ax.set_title("Each named bot's wash: the snapshot window caught only a sliver of the lifetime total\n"
                  f"14 wallets, \\${sum(life_v)/1e6:.1f}M matched lifetime against the \\$467k in-window floor", fontsize=10.5)
     fig.tight_layout()
-    fig.savefig(os.path.join(POST, "lifetime.png"), dpi=120); plt.close()
+    fig.savefig(os.path.join(POST, "lifetime.png"), dpi=120, metadata=PNG_META); plt.close()
 
 
 if __name__ == "__main__":
