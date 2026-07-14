@@ -127,12 +127,12 @@ This is a flag on a pattern, not an accusation against a person. Solana addresse
 
 ## Methodology and reproducibility
 
-The companion repository, [github.com/mkzung/solana-xstocks-wash-analysis](https://github.com/mkzung/solana-xstocks-wash-analysis), reproduces every figure and number from a committed snapshot, with CI that reruns the full pipeline. Every file named here - `data/universe.json`, `analysis/verify.py`, the rest - lives in that repository. The analysis is pinned at commit [`5d7053b`](https://github.com/mkzung/solana-xstocks-wash-analysis/tree/5d7053b90032612bfa3ebd65ec083cec0c5ba70f). To regenerate from the raw dumps, check that commit out and run the verifier:
+The companion repository, [github.com/mkzung/solana-xstocks-wash-analysis](https://github.com/mkzung/solana-xstocks-wash-analysis), reproduces every figure and number from a committed snapshot, with CI that reruns the full pipeline. Every file named here - `data/universe.json`, `analysis/verify.py`, the rest - lives in that repository. The analysis is pinned at commit [`c401571`](https://github.com/mkzung/solana-xstocks-wash-analysis/tree/c4015710f9f3a3b19ac8489b7481731f10ae735f). To regenerate from the raw dumps, check that commit out and run the verifier:
 
 ```bash
 git clone https://github.com/mkzung/solana-xstocks-wash-analysis
 cd solana-xstocks-wash-analysis
-git checkout 5d7053b90032612bfa3ebd65ec083cec0c5ba70f
+git checkout c4015710f9f3a3b19ac8489b7481731f10ae735f
 pip install -r requirements.txt
 python analysis/verify.py     # recomputes every headline number from the committed data
 ```
@@ -146,7 +146,7 @@ python analysis/verify.py     # recomputes every headline number from the commit
 
 ## Appendix: the flagged wallets
 
-The ten largest by in-window matched volume are shown, each with its lifetime matched total (across SPYX, TSLAX and QQQX, the three xStocks the collector recognises) alongside; the gap between the two is the sliver the snapshot window caught. (All 14 named bots, with a sample transaction hash for each, are in [`data/named_wallets.json`](https://github.com/mkzung/solana-xstocks-wash-analysis/blob/5d7053b90032612bfa3ebd65ec083cec0c5ba70f/data/named_wallets.json) in the companion repo.) Every wallet buys and sells in matched size, and each is a System-Program keypair rather than a router. A row is a wallet's activity in that pool's tape, which for routed swaps is a leg rather than a whole swap. Paste any address into a Solana explorer to verify.
+The ten largest by in-window matched volume are shown, each with its lifetime matched total (across SPYX, TSLAX and QQQX, the three xStocks the collector recognises) alongside; the gap between the two is the sliver the snapshot window caught. (All 14 named bots, with a sample transaction hash for each, are in [`data/named_wallets.json`](https://github.com/mkzung/solana-xstocks-wash-analysis/blob/c4015710f9f3a3b19ac8489b7481731f10ae735f/data/named_wallets.json) in the companion repo.) Every wallet buys and sells in matched size, and each is a System-Program keypair rather than a router. A row is a wallet's activity in that pool's tape, which for routed swaps is a leg rather than a whole swap. Paste any address into a Solana explorer to verify.
 
 | Pool | Wallet | Buys / Sells | In-window bought / sold (USD) | Lifetime matched (SPYX/TSLAX/QQQX) |
 |------|--------|--------------|-------------------------------|-------------------------------|
