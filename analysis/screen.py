@@ -132,7 +132,8 @@ def main():
             fp = sum(1 for r in rows if not r["flag"] and not r["is_control"]
                      and metrics(trades_by_slug[r["slug"]], mr, bal)["score"] >= flag)
             sweep.append(dict(min_rt=mr, balance=bal, flagged_above=fl, nonflagged_above=fp))
-    fp_at = lambda b: max(c["nonflagged_above"] for c in sweep if c["balance"] == b)
+    def fp_at(b):
+        return max(c["nonflagged_above"] for c in sweep if c["balance"] == b)
     threshold_sensitivity = dict(
         grid=sweep,
         false_positives_at_080=fp_at(0.80),          # 2: the cut collapses when loosened
