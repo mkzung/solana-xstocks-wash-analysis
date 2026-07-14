@@ -23,7 +23,7 @@ sells the same pool at least five times each and lands within 10% of flat. Organ
 contain none; the flagged pools are dominated by them. The bots:
 
 - buy and sell in matched size (QQQX's busiest wallet: bought $10,657, sold $10,695),
-- alternate buy/sell perfectly over dozens of swaps, net position never leaving flat,
+- alternate buy/sell perfectly over dozens of swaps, the net position sawtoothing between zero and about $300 and returning to flat after each round trip,
 - are coordinated where the funding says so: in TSLAX/Orca seven wallets form a creation chain - every wallet
   after the first created and seeded, ~500 USDT, by the one before it, the six seeds falling in
   steps of 4.3 to 4.6 USDT; three SPYX wallets run identical parameters; counting only its own
@@ -44,9 +44,10 @@ extrapolation and the two natural methods disagree by about threefold in aggrega
 across the five pools), and by far more on an individual pool - widest on QQQX, where the share method
 implies $26M against under $1M from that pool's own observed bot rate. Both assume the snapshot
 behaviour persists, which the six-hour re-sample contradicts; the floor and the per-pool shares are the
-claims to rely on. Following the fourteen named wallets through their full
-on-chain history lifts the directly-observed matched total to $5.6M in 2,836 swaps (one
-wallet alone $2.9M) - more than ten times the in-window floor - with each wallet's washing
+claims to rely on. Following the fourteen named wallets back through their history in the
+three xStocks the collector recognises (SPYX, TSLAX, QQQX) lifts the directly-observed matched
+total to $5.6M in 2,836 swaps (one wallet alone $2.9M) - more than ten times the in-window
+floor, and itself a floor since other xStocks are not counted - with each wallet's washing
 concentrated in a burst of days, the rotating-fleet pattern again.
 
 The matched buy/sell capture no spread: the sells return about 99.3% of what the buys cost, a
@@ -91,7 +92,7 @@ python analysis/owner_check.py   # Solana RPC: confirm each bot is a System-Prog
 - Dexscreener API - pool universe, 24h volume, liquidity, turnover. (no key)
 - GeckoTerminal API - tx-level swaps (wallet, hash, side, USD) and OHLCV history. (no key)
 - Solana JSON-RPC (public endpoints) - wallet funding traces and account-owner checks (each bot is a System-Program keypair, not a router). (no key)
-- Helius enhanced-transactions API (free tier) - each named bot's full lifetime swap history, used only for the lifetime totals in "The scale". The collected swaps are committed, so the totals recompute deterministically without a key.
+- Helius enhanced-transactions API (free tier) - each named bot's swap history in the three recognised xStocks (SPYX, TSLAX, QQQX), used only for the lifetime totals in "The scale"; activity in lower-volume xStocks has no known mint and is not counted, so those totals are floors. The collected swaps are committed, so the totals recompute deterministically without a key.
 
 ## Layout
 
@@ -109,8 +110,9 @@ tests/        pytest invariants
 ## Scope and ethics
 
 This characterises a pattern of automated, self-cancelling trading and its on-chain funding
-structure. Solana addresses are pseudonymous; the wallets are demonstrably coordinated with each
-other, but the analysis does not identify who controls them or why, and the funding trace is
-depth-capped (it does not claim a single named operator or exchange of origin). It is a flag on
+structure. Solana addresses are pseudonymous; in three of the five pools the wallets trace to shared funding,
+in the other two they share only the behaviour, and the analysis does not identify who controls
+them or why. The funding trace is depth-capped (it does not claim a single named operator or
+exchange of origin across the pools). It is a flag on
 behaviour, not a legal verdict. Motive is left open: documented incentives include DEX-aggregator
 volume rankings and Solana liquidity-mining programs, but no issuer rebate-per-volume is assumed.

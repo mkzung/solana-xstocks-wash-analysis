@@ -285,6 +285,12 @@ def main():
     ck("median balance 0.94 flagged / 0.66 control (matches post)",
        round(statistics.median(fb), 2) == 0.94 and round(statistics.median(cb), 2) == 0.66 and says("0.94", "0.66"))
 
+    # the counts behind "18 of 33" (flagged) and "1 of 22" (non-flagged + controls) the post leans on
+    ck("balanced-wallet counts 18 of 33 flagged / 1 of 22 rest (matches post)",
+       len(fb) == 33 and sum(1 for x in fb if x >= 0.90) == 18
+       and len(cb) == 22 and sum(1 for x in cb if x >= 0.90) == 1
+       and says("18 of 33") and says("1 of 22"))
+
     # 19) wallet-age dates: earliest named bot Oct 2025, earliest funder Dec 2024
     ck("earliest bot Oct-2025 / funder Dec-2024 (temporal.json matches post)",
        T["earliest_bot"] == "2025-10-27" and T["earliest_funder"] == "2024-12-25"
@@ -445,11 +451,13 @@ def main():
         return out
 
     linked = 0
+    funded_ids = set()                       # 8-char pool_ids whose bots are funding-linked
     for _k, p_ in CL["pools"].items():
         bots_ = [b["wallet"] for b in p_["bots"]]
         if any(v in ancestors(w) or w in ancestors(v) or (set(ancestors(w)) & set(ancestors(v)))
                for i, w in enumerate(bots_) for v in bots_[i + 1:]):
             linked += 1
+            funded_ids.add(_k.split("/")[-1])
     ck("three of the five flagged pools have a funding link between their bots, and the post says so",
        linked == 3 and says("three of the five") and says("no funding link between the bots"))
 
@@ -527,6 +535,17 @@ def main():
         for a in bad_shorts:
             print(f"    SHORT FORM MATCHES NOTHING: `{a}`")
 
+    # a fabricated script name reads exactly like a real one: fetch_universe.py was invented and
+    # shipped for one draft. Every .py the post names must exist in analysis/.
+    have_py = {os.path.basename(p) for p in glob.glob(os.path.join(ROOT, "analysis", "*.py"))}
+    cited_py = set(re.findall(r"`([a-z_]+\.py)`", post))
+    missing_py = sorted(cited_py - have_py)
+    ck(f"every script the post names ({len(cited_py)}) exists in analysis/",
+       not missing_py)
+    if missing_py:
+        for f in missing_py:
+            print(f"    FABRICATED SCRIPT (no such file in analysis/): `{f}`")
+
     # the post pins this repo in three places; a half-bumped pin points at the wrong tree
     pins = re.findall(r"solana-xstocks-wash-analysis/(?:tree|blob)/([0-9a-f]{40})", post)
     pins += re.findall(r"git checkout ([0-9a-f]{40})", post)      # the repro command pins it too
@@ -538,7 +557,12 @@ def main():
     # dashboard.html and index.html for a day. Anything withdrawn goes here and stays dead.
     withdrawn = ["Fisher", "hypergeom", "8e-5", "1 in 12,000", "statistically significant",
                  "order of magnitude", "runs continuously", "Two figures bound", "is an LP",
-                 "Six TSLAX", "six-wallet", "~4.5 USDT"]
+                 "Six TSLAX", "six-wallet", "~4.5 USDT",
+                 # overclaims corrected 2026-07-14; each was scoped wrong and must stay dead
+                 "never holding a position", "never leaves flat", "never leaving flat",
+                 "never takes a position", "never departs from flat",
+                 "entire on-chain history", "full on-chain history", "all xStocks",
+                 "are the constants", "within each pool", "reaches a second pool"]
     # strip the base64 images: 680kB of [A-Za-z0-9+/] would hit "fisher" by chance eventually
     surfaces = {name: re.sub(r"data:image/[a-z]+;base64,[A-Za-z0-9+/=]+", "",
                              read_text(os.path.join(ROOT, name)))
@@ -553,6 +577,69 @@ def main():
     if alive:
         for n, w in alive:
             print(f"    STILL PRESENT: {w!r} in {n}")
+
+    # ---- corrections after the 2026-07-14 Copilot round: each overclaim is now pinned ----
+
+    # the universe is a hand-picked ticker list, not "every xStock"; nine symbols, all named.
+    universe = read_json(os.path.join(ROOT, "data", "universe.json"))
+    uni_syms = {p["sym"] for p in universe.values()}
+    ck("the post discloses the universe is nine pre-selected tickers, and names them",
+       len(uni_syms) == 9 and says("nine xStock tickers")
+       and all(says(s) for s in uni_syms) and says("pre-selection"))
+
+    # the lifetime totals cover only the symbols that survive the volume floor (known mint),
+    # so the collector recognises exactly SPYX/TSLAX/QQQX; the post must not say "all xStocks".
+    life_syms = set()
+    for pth in glob.glob(os.path.join(ROOT, "data", "raw", "wallet_swaps", "*.json")):
+        for sw in read_json(pth).get("swaps", []):
+            life_syms.add(sw["sym"])
+    ck("lifetime scope is exactly the 3 recognised symbols, and the post says so",
+       life_syms == {"SPYX", "TSLAX", "QQQX"}
+       and says("three xStocks the collector recognises")
+       and says("itself a floor"))
+
+    # 33X9awze reaches THREE pools in its own transactions (routing.json), not two.
+    A33 = "33X9awzeff9PbKBpQYaf1ZJTp8Ksxv8Fne3WxajLpwM7"
+    ck("33X9awze's own-transaction pool count (3) matches routing.json and the post",
+       len(R["multi_pool_by_own_tx"][A33]) == 3
+       and says("also trades three of them in its own transactions"))
+
+    # persistence and funding each hold on three of five pools - but DIFFERENT threes, and the whole
+    # "only TSLAX/orca does both" claim turns on the two SPYX/orca pools swapping roles: gef4pD5g
+    # (wash 0.4054) re-flags but is NOT funded; 6m6UoVxn (0.3579) is funded but does NOT re-flag.
+    # Prove it from the data, not just the wording.
+    reflag_spyx_orca = None                    # which SPYX/orca pool re-flags at +6h
+    for pr in P["pools"]:
+        if pr["pool"] == "SPYX/orca" and pr["still_flagged"]:
+            reflag_spyx_orca = "gef4pD5g" if round(pr["snap_wash"], 4) == 0.4054 else "6m6UoVxn"
+    ck("the two SPYX/orca pools swap roles: gef4pD5g re-flags & unfunded, 6m6UoVxn funded & not",
+       reflag_spyx_orca == "gef4pD5g"
+       and "gef4pD5g" not in funded_ids and "6m6UoVxn" in funded_ids
+       and P["still_flagged"] == 3 and linked == 3
+       and says("they are not the same three pools") and says("only tslax/orca does both"))
+
+    # recurrence is one before/after re-sample, not a proven cadence ("constant").
+    ck("the post scopes recurrence to the single re-sample, not a general constant",
+       says("one before-and-after comparison") and not says("are the constants"))
+
+    # the control comparison is thin (3 wallets) and not a test; the post says so and no longer
+    # leans on the circular flagged-vs-nonflagged count.
+    ck("the post flags the control sample as thin and not a test",
+       says("thin comparison") and says("measures the selection"))
+
+    # "returns to flat" replaces "never holds a position" everywhere the sawtooth is described.
+    ck("the mechanism is described as returning to flat, not never holding a position",
+       says("returns to flat after every pair") and says("ends every round trip flat"))
+
+    # the sensitivity sweep is COMPUTED (screen.json), not asserted: at 0.90 no false positive at any
+    # min_rt, at 0.80 two, and tightening to 0.95 only sheds true positives. The post must match.
+    TS = read_json(os.path.join(ROOT, "screen.json"))["threshold_sensitivity"]
+    ck("threshold sweep matches the post: 0.80 admits 2 false positives, 0.90 admits 0",
+       TS["false_positives_at_080"] == 2 and TS["false_positives_at_090"] == 0
+       and TS["false_positives_at_095"] == 0
+       and TS["flagged_above_at_095_default_rt"] == 4
+       and says("no non-flagged pool crosses the flag at any")
+       and says("loosening to 0.80") and says("four of the five survive"))
 
     nfail = sum(1 for _, ok in checks if not ok)
     print(f"\n{len(checks)} checks, {nfail} failed")

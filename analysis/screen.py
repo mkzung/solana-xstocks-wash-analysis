@@ -117,6 +117,30 @@ def main():
     max_nonflagged_bots = max((r["n_wash_bots"] for r in rows if not r["flag"]), default=0)
     min_flagged_bots = min((r["n_wash_bots"] for r in flagged), default=0)
 
+    # Threshold sensitivity, computed rather than asserted. Re-score every pool across a grid of
+    # (min_rt, balance) and record two things per cell: how many of the five flagged pools still
+    # clear the flag, and how many NON-flagged, non-control pools cross it (false positives). The
+    # honest reading: loosening balance to 0.80 admits false positives at every min_rt, while
+    # tightening to 0.95 only sheds thin true positives - so 0.90 sits in the band where the five
+    # separate from the rest with no false positive, not at a tuned edge.
+    trades_by_slug = {r["slug"]: read_json(os.path.join(RAW, r["slug"] + ".json"))["trades"] for r in rows}
+    flagged_slugs = {r["slug"] for r in flagged}
+    sweep = []
+    for bal in (0.80, 0.90, 0.95):
+        for mr in (3, 5, 8, 10):
+            fl = sum(1 for s in flagged_slugs if metrics(trades_by_slug[s], mr, bal)["score"] >= flag)
+            fp = sum(1 for r in rows if not r["flag"] and not r["is_control"]
+                     and metrics(trades_by_slug[r["slug"]], mr, bal)["score"] >= flag)
+            sweep.append(dict(min_rt=mr, balance=bal, flagged_above=fl, nonflagged_above=fp))
+    fp_at = lambda b: max(c["nonflagged_above"] for c in sweep if c["balance"] == b)
+    threshold_sensitivity = dict(
+        grid=sweep,
+        false_positives_at_080=fp_at(0.80),          # 2: the cut collapses when loosened
+        false_positives_at_090=fp_at(0.90),          # 0: no non-flagged pool ever crosses at 0.90
+        false_positives_at_095=fp_at(0.95),          # 0: tightening never adds a false positive
+        min_flagged_above_at_090=min(c["flagged_above"] for c in sweep if c["balance"] == 0.90),
+        flagged_above_at_095_default_rt=next(c["flagged_above"] for c in sweep if c["balance"] == 0.95 and c["min_rt"] == 5))
+
     out = dict(network="solana", asset_class="tokenized stocks (xStocks)", snapshot="2026-06-21",
                n_pools=len(rows), flag_threshold=flag, n_flagged=len(flagged),
                flagged=[r["symbol"] + "/" + r["dex"] for r in flagged],
@@ -128,6 +152,7 @@ def main():
                                          n_nonflagged_subwindow_above_flag=n_above_flag,
                                          max_nonflagged_fullwindow_wash_bots=max_nonflagged_bots,
                                          min_flagged_n_bots=min_flagged_bots, detail=sub_detail),
+               threshold_sensitivity=threshold_sensitivity,
                clean_same_class=[dict(symbol=r["symbol"], dex=r["dex"], score=r["score"], n_wash_bots=r["n_wash_bots"])
                                  for r in clean if not r["is_control"]],
                markets=rows)

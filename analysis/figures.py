@@ -100,7 +100,7 @@ def fig_cadence():
     a2.axhline(0, color="#868e96", lw=0.8, ls="--")
     a2.fill_between(mins, net, 0, color=BLUE, alpha=0.12)
     a2.set_ylabel("cumulative net position (USD)"); a2.set_xlabel("minutes from first swap")
-    a2.set_title("Net position never departs from flat: volume is manufactured, no position is taken", fontsize=10.5)
+    a2.set_title("Net position sawtooths between zero and ~$300, back to flat after each pair: volume is manufactured", fontsize=10.5)
     fig.tight_layout()
     fig.savefig(os.path.join(POST, "cadence.png"), dpi=120, metadata=PNG_META); plt.close()
 
@@ -215,7 +215,7 @@ def fig_lifetime():
     win_v = [max(inwin.get(r["wallet"], 0), 1) for r in rows]
     y = np.arange(len(rows))
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.barh(y + 0.21, life_v, height=0.42, color=ORANGE, label="lifetime matched (full on-chain history)")
+    ax.barh(y + 0.21, life_v, height=0.42, color=ORANGE, label="lifetime matched (SPYX/TSLAX/QQQX)")
     ax.barh(y - 0.21, win_v, height=0.42, color="#f2c29b", label="in-window matched (snapshot)")
     ax.set_yticks(y); ax.set_yticklabels(labels, fontsize=8, family="monospace"); ax.invert_yaxis()
     ax.set_xscale("log"); ax.set_xlabel("matched USD, log scale")
