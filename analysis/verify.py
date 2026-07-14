@@ -419,6 +419,40 @@ def main():
        full_nonflagged_max <= 1 and min_flagged_bots >= 2 and n_above_flag == 4
        and says("sustained across the whole snapshot") and says("four of the non-flagged"))
 
+    # the collector drops pools under a volume floor before fetching a tape, so the post has to
+    # say so: an undisclosed filter is a silent selection rule
+    src_fetch = read_text(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fetch_raw.py"))
+    min_vol = int(re.search(r"^MIN_VOL\s*=\s*(\d+)", src_fetch, re.M).group(1))
+    ck("the post discloses the volume floor the collector applies ($50,000)",
+       min_vol == 50000 and says("$50,000") and says("fetches a tape only for"))
+
+    # the funnel: 32 in the universe, 14 clear the floor, 16 scored with the controls, 18 unscored
+    uni = read_json(os.path.join(ROOT, "data", "universe.json"))
+    clears = [a for a, pl in uni.items() if (pl.get("vol") or 0) >= min_vol]
+    ck("the post states the real funnel (32 -> 14 clear the floor -> 16 scored, 18 unscored)",
+       len(uni) == 32 and len(clears) == 14
+       and len(read_json(os.path.join(ROOT, "screen.json"))["markets"]) == 16
+       and says("32") and says("14") and says("18") and says("unscored rather than clean"))
+
+    # count the pools whose bots are tied by funding - one funded another, or a shared ancestor
+    CL = read_json(os.path.join(ROOT, "cluster.json"))
+    FE = CL["funding_edges"]
+
+    def ancestors(w):
+        out, cur = [], w
+        while cur in FE and FE[cur].get("parent") and FE[cur]["parent"] not in out:
+            cur = FE[cur]["parent"]; out.append(cur)
+        return out
+
+    linked = 0
+    for _k, p_ in CL["pools"].items():
+        bots_ = [b["wallet"] for b in p_["bots"]]
+        if any(v in ancestors(w) or w in ancestors(v) or (set(ancestors(w)) & set(ancestors(v)))
+               for i, w in enumerate(bots_) for v in bots_[i + 1:]):
+            linked += 1
+    ck("three of the five flagged pools have a funding link between their bots, and the post says so",
+       linked == 3 and says("three of the five") and says("no funding link between the bots"))
+
     # Aggregator routing: one signed transaction can be split across pools, so a pool tape shows a
     # leg, not a whole swap. Recompute the three claims that follow from it.
     R = read_json(os.path.join(ROOT, "routing.json"))
@@ -471,6 +505,8 @@ def main():
     for f, w, _s, _n in read_json(os.path.join(ROOT, "data", "funding_edges.json"))["edges"]:
         known.add(f); known.add(w)
     known.update(r["wallet"] for r in read_json(os.path.join(ROOT, "data", "named_wallets.json")))
+    # the post can cite pools the volume floor excluded
+    known.update(read_json(os.path.join(ROOT, "data", "universe.json")).keys())
     # strip the pin links first: a hex SHA is very nearly base58
     body = re.sub(r"https://github\.com/\S+", "", post)
     addrs = set(re.findall(r"[1-9A-HJ-NP-Za-km-z]{32,44}", body))

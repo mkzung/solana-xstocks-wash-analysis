@@ -24,7 +24,7 @@ contain none; the flagged pools are dominated by them. The bots:
 
 - buy and sell in matched size (QQQX's busiest wallet: bought $10,657, sold $10,695),
 - alternate buy/sell perfectly over dozens of swaps, net position never leaving flat,
-- are a coordinated fleet: in TSLAX/Orca seven wallets form a creation chain - every wallet
+- are coordinated where the funding says so: in TSLAX/Orca seven wallets form a creation chain - every wallet
   after the first created and seeded, ~500 USDT, by the one before it, the six seeds falling in
   steps of 4.3 to 4.6 USDT; three SPYX wallets run identical parameters; counting only its own
   transactions rather than the legs of routed swaps, one wallet round-trips SPYX in all three of
@@ -78,7 +78,8 @@ All of the above runs over the committed snapshot in `data/raw/` (no network, de
 CI reruns it on every push. To refresh the snapshot from live data:
 
 ```bash
-python analysis/fetch_raw.py     # Dexscreener + GeckoTerminal (trades + OHLCV)
+python analysis/fetch_raw.py     # reads the committed universe.json, applies the $50k volume floor,
+                                 # then pulls trades + OHLCV from GeckoTerminal
 python analysis/fund_trace.py    # Solana RPC: wallet funding origins
 python analysis/trace_tree.py    # Solana RPC: walk the funding tree
 WH_HELIUS_KEY=...  python analysis/wallet_history.py   # Helius enhanced API: each bot's full swap history
