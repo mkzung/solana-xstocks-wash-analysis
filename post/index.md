@@ -127,12 +127,12 @@ This is a flag on a pattern, not an accusation against a person. Solana addresse
 
 ## Methodology and reproducibility
 
-The companion repository, [github.com/mkzung/solana-xstocks-wash-analysis](https://github.com/mkzung/solana-xstocks-wash-analysis), reproduces every figure and number from a committed snapshot, with CI that reruns the full pipeline. The analysis is pinned at commit [`54c62bc`](https://github.com/mkzung/solana-xstocks-wash-analysis/tree/54c62bc2a0c8fe5970e6310739618e98686ca883). To regenerate from the raw dumps, check that commit out and run the verifier:
+The companion repository, [github.com/mkzung/solana-xstocks-wash-analysis](https://github.com/mkzung/solana-xstocks-wash-analysis), reproduces every figure and number from a committed snapshot, with CI that reruns the full pipeline. The analysis is pinned at commit [`af6aa85`](https://github.com/mkzung/solana-xstocks-wash-analysis/tree/af6aa85b1878b89b61f4290dac717cdfbf456bbb). To regenerate from the raw dumps, check that commit out and run the verifier:
 
 ```bash
 git clone https://github.com/mkzung/solana-xstocks-wash-analysis
 cd solana-xstocks-wash-analysis
-git checkout 54c62bc2a0c8fe5970e6310739618e98686ca883
+git checkout af6aa85b1878b89b61f4290dac717cdfbf456bbb
 pip install -r requirements.txt
 python analysis/verify.py     # recomputes every headline number from the committed data
 ```
@@ -146,7 +146,7 @@ python analysis/verify.py     # recomputes every headline number from the commit
 
 ## Appendix: the flagged wallets
 
-The ten largest by in-window matched volume are shown, each with its lifetime matched total (all xStocks, full on-chain history) alongside; the gap between the two is the sliver the snapshot window caught. (All 14 named bots, with a sample transaction hash for each, are in [`data/named_wallets.json`](https://github.com/mkzung/solana-xstocks-wash-analysis/blob/54c62bc2a0c8fe5970e6310739618e98686ca883/data/named_wallets.json) in the companion repo.) Every wallet buys and sells in matched size, and each is a System-Program keypair rather than a router. A row is a wallet's activity in that pool's tape, which for routed swaps is a leg rather than a whole swap. Paste any address into a Solana explorer to verify.
+The ten largest by in-window matched volume are shown, each with its lifetime matched total (all xStocks, full on-chain history) alongside; the gap between the two is the sliver the snapshot window caught. (All 14 named bots, with a sample transaction hash for each, are in [`data/named_wallets.json`](https://github.com/mkzung/solana-xstocks-wash-analysis/blob/af6aa85b1878b89b61f4290dac717cdfbf456bbb/data/named_wallets.json) in the companion repo.) Every wallet buys and sells in matched size, and each is a System-Program keypair rather than a router. A row is a wallet's activity in that pool's tape, which for routed swaps is a leg rather than a whole swap. Paste any address into a Solana explorer to verify.
 
 | Pool | Wallet | Buys / Sells | In-window bought / sold (USD) | Lifetime matched, all xStocks |
 |------|--------|--------------|-------------------------------|-------------------------------|
