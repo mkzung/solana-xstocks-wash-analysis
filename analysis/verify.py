@@ -566,7 +566,10 @@ def main():
                  "never holding a position", "never leaves flat", "never leaving flat",
                  "never takes a position", "never departs from flat",
                  "entire on-chain history", "full on-chain history", "all xStocks",
-                 "are the constants", "within each pool", "reaches a second pool"]
+                 "are the constants", "within each pool", "reaches a second pool",
+                 # 2026-07-15 Copilot: some published histories exceed one 1000-sig page and the cited
+                 # SPYX funders are depth-capped, so "one page / true first transaction" was false.
+                 "every history fits in one page", "fits in one page"]
     # strip the base64 images: 680kB of [A-Za-z0-9+/] would hit "fisher" by chance eventually
     surfaces = {name: re.sub(r"data:image/[a-z]+;base64,[A-Za-z0-9+/=]+", "",
                              read_text(os.path.join(ROOT, name)))
@@ -665,6 +668,59 @@ def main():
     lo, hi = round((0.9 / 1.9), 4), round((1 / 0.9) / ((1 / 0.9) + 1), 4)
     ck("metric mapping: min/max>=0.90 is buysellratioabs 0.4737 to 0.5263 (exact, not rounded 0.47-0.53)",
        lo == 0.4737 and hi == 0.5263 and says("0.4737 and 0.5263"))
+
+    # 2026-07-15 Copilot round: the funding-trace origin claim must be scoped. A named bot exceeds one
+    # 1000-signature RPC page (33X9awze = 1020, still fully retrieved) and the two cited SPYX common
+    # funders hit the signature-page cap at 2000 (fund_trace MAX_PAGES=2) so their history is truncated
+    # - distinct from the funding-tree depth cap. "Every history fits in one page, origin is the true
+    # first transaction" was false for the funders. Data-tie it from the committed traces.
+    def _wtrace(pfx):
+        g = glob.glob(os.path.join(RAWW, pfx + "*.json"))
+        return read_json(g[0]) if g else {}
+    a77, f7p, a33 = _wtrace("A77HErqt"), _wtrace("F7p3dFrj"), _wtrace("33X9awze")
+    ck("funding-trace origin claim scoped: SPYX funders capped at 2000 sigs, 33X9awze spans 2 pages uncapped",
+       a77.get("capped") is True and f7p.get("capped") is True
+       and (a77.get("n_sigs") or 0) >= 2000 and (f7p.get("n_sigs") or 0) >= 2000
+       and (a33.get("n_sigs") or 0) > 1000 and a33.get("capped") is False
+       and says("not a proven origin") and says("two thousand signatures") and "fits in one page" not in post)
+
+    # ---- long-tail prose specifics (2026-07-15 detailed re-check): recompute each cited number ----
+    U = read_json(os.path.join(ROOT, "data", "universe.json"))
+    qe = next(p for a, p in U.items() if a.startswith("EibwWLHy"))
+    ck("macro: QQQX/Raydium $33.68M vol on $20.74k liq = 1624x (universe.json matches post)",
+       round(qe["vol"] / 1e6, 2) == 33.68 and round(qe["liq"] / 1e3, 2) == 20.74 and round(qe["turn"]) == 1624
+       and "33.68M" in post and "20.74k" in post and "1,624x" in post)
+    nv = next(p for a, p in U.items() if a.startswith("6R4r93V5"))
+    ck("macro: NVDAX/Orca 6R4r93V5 = 1,365 swaps on $27k (universe.json matches post)",
+       nv["buys"] + nv["sells"] == 1365 and round(nv["vol"] / 1e3) == 27 and "1,365 swaps" in post and "$27k" in post)
+    ck("macro: the two pools just under the floor are $46.7k and $40.4k (matches post)",
+       sorted(round(p["vol"]) for a, p in U.items() if 40000 <= (p.get("vol") or 0) < 50000) == [40355, 46748]
+       and "$46.7k" in post and "$40.4k" in post)
+
+    # persistence re-sample per-pool shares: three re-flag at 75 / 69 / 41
+    ck("persistence re-sample shares TSLAX 75% / QQQX 69% / SPYX-Orca 41% (matches post)",
+       sorted(round(r["live_wash"] * 100) for r in P["pools"] if r["still_flagged"]) == [41, 69, 75]
+       and "TSLAX 75%" in post and "QQQX 69%" in post and "41%" in post)
+
+    # the single borderline non-flagged heavy round-tripper sits at 0.91
+    borderline = [round(min(bu, su) / max(bu, su), 2)
+                  for pth in glob.glob(os.path.join(RAWT, "*.json")) if os.path.basename(pth)[:-5] not in FLAGGED
+                  for b, s, bu, su in ledger(read_json(pth)["trades"]).values()
+                  if b >= 5 and s >= 5 and max(bu, su) > 0 and min(bu, su) / max(bu, su) >= 0.90]
+    ck("borderline: exactly one non-flagged heavy round-tripper >=0.90, at 0.91 (matches post)",
+       borderline == [0.91] and says("one wallet sits on the line at 0.91"))
+
+    # C6FyA84D clip size (~$300, ~0.4 QQQX) and cadence (17s; a TSLAX bot 4-5s)
+    c6 = [t for t in read_json(os.path.join(RAWT, "QQQX__raydium__EibwWLHy.json"))["trades"]
+          if (t.get("tx_from_address") or "").startswith("C6FyA84D")]
+    ck("clip: C6FyA84D median swap ~$300 (matches post ~0.4 QQQX, ~$300)",
+       295 <= statistics.median(float(t["volume_in_usd"]) for t in c6) <= 305
+       and says("about $300 each") and says("0.4 qqqx"))
+    c6cad = next(c for k, p in T["pools"].items() if k.startswith("QQQX") for c in p["cadence"] if c["wallet"].startswith("C6FyA84D"))
+    ck("cadence: C6FyA84D median gap 17s; a TSLAX bot 4-5s (matches post)",
+       c6cad["median_gap_s"] == 17.0
+       and any(4.0 <= c["median_gap_s"] <= 5.0 for k, p in T["pools"].items() if k.startswith("TSLAX") for c in p["cadence"])
+       and says("median 17 seconds") and says("4 to 5 second"))
 
     nfail = sum(1 for _, ok in checks if not ok)
     print(f"\n{len(checks)} checks, {nfail} failed")
