@@ -1,12 +1,13 @@
-"""Confirm each named wash bot is a plain keypair owned by the System Program
+"""Confirm each named wash bot is a System-Program-owned account, i.e. a wallet
 (not a program-derived router / AMM / aggregator account), via public Solana RPC.
 
 Network collector, run once to build the committed snapshot. For each named bot it
-calls getAccountInfo and records the account owner. A normal user keypair is owned
-by the System Program (11111111111111111111111111111111); a router/PDA/program
-account is owned by some program id. Output: data/raw/wallet_owners.json, which
-analysis/verify.py then checks offline (so the "plain keypair, not a router" claim
-in the post recomputes deterministically from committed data, key-less).
+calls getAccountInfo and records the account owner. An ordinary wallet account is
+owned by the System Program (11111111111111111111111111111111); a router/PDA/program
+account is owned by some program id. This distinguishes a wallet from a program - it
+does NOT by itself prove the key is on-curve. Output: data/raw/wallet_owners.json,
+which analysis/verify.py then checks offline (so the "wallet, not a router" claim in
+the post recomputes deterministically from committed data, key-less).
 """
 import os
 import sys
@@ -60,7 +61,7 @@ def main():
     out = dict(snapshot="2026-06-21", rpc=RPC, system_program=SYSTEM_PROGRAM, owners=owners)
     write_json(out, os.path.join(OUT, "wallet_owners.json"), indent=2)
     n_sys = sum(1 for o in owners.values() if o == SYSTEM_PROGRAM)
-    print(f"\n{n_sys}/{len(bots)} named bots are System-Program keypairs (not routers)")
+    print(f"\n{n_sys}/{len(bots)} named bots are System-Program-owned accounts (not routers)")
     print("wrote data/raw/wallet_owners.json")
 
 

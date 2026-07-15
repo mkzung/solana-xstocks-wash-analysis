@@ -99,8 +99,8 @@ def fig_cadence():
     a2.plot(mins, net, color=BLUE, lw=1.5)
     a2.axhline(0, color="#868e96", lw=0.8, ls="--")
     a2.fill_between(mins, net, 0, color=BLUE, alpha=0.12)
-    a2.set_ylabel("cumulative net position (USD)"); a2.set_xlabel("minutes from first swap")
-    a2.set_title("Net position sawtooths between zero and ~$300, back to flat after each pair: volume is manufactured", fontsize=10.5)
+    a2.set_ylabel("cumulative signed trade value (USD)"); a2.set_xlabel("minutes from first swap")
+    a2.set_title("Signed trade value sawtooths between zero and ~$300, back to near zero after each pair: volume is manufactured", fontsize=10.5)
     fig.tight_layout()
     fig.savefig(os.path.join(POST, "cadence.png"), dpi=120, metadata=PNG_META); plt.close()
 
@@ -220,8 +220,11 @@ def fig_lifetime():
     ax.set_yticks(y); ax.set_yticklabels(labels, fontsize=8, family="monospace"); ax.invert_yaxis()
     ax.set_xscale("log"); ax.set_xlabel("matched USD, log scale")
     ax.legend(fontsize=9, loc="lower right")
+    # derive the wallet count and the floor from the data rather than hardcoding them: figure
+    # titles are not covered by verify.py, so a hardcoded literal here could silently go stale.
+    floor_k = read_json(os.path.join(ROOT, "temporal.json"))["matched_in_window_floor"] / 1e3
     ax.set_title("Each named bot's wash: the snapshot window caught only a sliver of the lifetime total\n"
-                 f"14 wallets, \\${sum(life_v)/1e6:.1f}M matched lifetime against the \\$467k in-window floor", fontsize=10.5)
+                 f"{len(rows)} wallets, \\${sum(life_v)/1e6:.1f}M matched lifetime against the \\${floor_k:.0f}k in-window floor", fontsize=10.5)
     fig.tight_layout()
     fig.savefig(os.path.join(POST, "lifetime.png"), dpi=120, metadata=PNG_META); plt.close()
 

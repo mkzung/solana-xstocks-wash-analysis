@@ -384,13 +384,13 @@ def main():
             and r["sample_tx"] in tx_by_key.get(k, set())
     ck("named_wallets.json matches the detector (set, counts, USD, sample_tx)", nw_ok)
 
-    # 26) every named bot is a plain System-Program keypair, not a router/PDA (committed owner
-    #     snapshot from owner_check.py), so the post's "not aggregator routing" claim recomputes
-    #     offline from committed data.
+    # 26) every named bot is owned by the System Program, not a program/PDA/router (committed owner
+    #     snapshot from owner_check.py). This shows the account is a wallet, not a program - it does
+    #     NOT prove the key is on-curve, and the post now says exactly that.
     own = read_json(os.path.join(ROOT, "data", "raw", "wallet_owners.json"))
-    ck("all named bots are System-Program keypairs (owner_check snapshot)",
+    ck("all named bots are System-Program-owned accounts (owner_check snapshot)",
        allbots <= set(own["owners"]) and all(own["owners"][w] == own["system_program"] for w in allbots)
-       and "System Program" in post and "System-Program" in post)
+       and "System Program" in post and "does not by itself prove the key is on-curve" in post)
 
     # 27) window-confound robustness, stated honestly (independent recompute). Wash SHARE is
     #     window-sensitive: sliced to the shortest flagged window, several non-flagged pools show a
@@ -591,16 +591,19 @@ def main():
        len(uni_syms) == 9 and says("nine xStock tickers")
        and all(says(s) for s in uni_syms) and says("pre-selection"))
 
-    # the lifetime totals cover only the symbols that survive the volume floor (known mint),
-    # so the collector recognises exactly SPYX/TSLAX/QQQX; the post must not say "all xStocks".
+    # the collector recognises the mints of every non-control pool that cleared the volume floor -
+    # SEVEN symbols, not three. These 14 wallets happen to trade only three of them. The earlier
+    # "three the collector recognises" wording was wrong; the post must state 7 recognised / 3 traded.
+    recognised = {read_json(p)["meta"]["sym"] for p in glob.glob(os.path.join(RAWT, "*.json"))
+                  if not os.path.basename(p).startswith("CTRL_")}
     life_syms = set()
     for pth in glob.glob(os.path.join(ROOT, "data", "raw", "wallet_swaps", "*.json")):
         for sw in read_json(pth).get("swaps", []):
             life_syms.add(sw["sym"])
-    ck("lifetime scope is exactly the 3 recognised symbols, and the post says so",
-       life_syms == {"SPYX", "TSLAX", "QQQX"}
-       and says("three xStocks the collector recognises")
-       and says("itself a floor"))
+    ck("lifetime scope: collector recognises 7 floor-clearing symbols, wallets touch 3 (SPYX/TSLAX/QQQX)",
+       len(recognised) == 7 and life_syms == {"SPYX", "TSLAX", "QQQX"} and life_syms <= recognised
+       and says("seven that cleared the volume floor") and says("these wallets touch only three")
+       and says("floor on their all-xstock two-sided total"))
 
     # 33X9awze reaches THREE pools in its own transactions (routing.json), not two.
     A33 = "33X9awzeff9PbKBpQYaf1ZJTp8Ksxv8Fne3WxajLpwM7"
@@ -632,8 +635,9 @@ def main():
        says("thin comparison") and says("measures the selection"))
 
     # "returns to flat" replaces "never holds a position" everywhere the sawtooth is described.
-    ck("the mechanism is described as returning to flat, not never holding a position",
-       says("returns to flat after every pair") and says("ends every round trip flat"))
+    ck("the mechanism is returning to flat / near zero, not 'never holding a position'",
+       says("returns to near zero after every pair") and says("ends every round trip flat")
+       and not says("never holding a position"))
 
     # the sensitivity sweep is COMPUTED (screen.json) and judged against the ONLY ground truth here -
     # the a-priori controls, not the detector's own non-flagged output. WIF (organic, fixed before
@@ -643,18 +647,24 @@ def main():
        TS["controls_crossing_at_080"] == ["WIF"] and TS["controls_crossing_at_090"] == []
        and TS["controls_crossing_at_095"] == [] and TS["flagged_above_at_095_default_rt"] == 4
        and says("neither WIF nor JUP is flagged") and says("WIF crosses the flag at every")
-       and says("four of the five flagged pools survive"))
+       and says("four of the five survive") and says("loosest balance cut that still flags neither control"))
 
-    # the control-cadence claim is reproducible: temporal.py runs cadence over the controls, which
-    # have no wash bot, so it is empty for both - not asserted, computed.
+    # the control cadence is EMPTY BY CONSTRUCTION - cadence() filters to wash-bot wallets, of which
+    # the controls have none - so the post must NOT present it as independent cadence evidence.
     TC = read_json(os.path.join(ROOT, "temporal.json"))["control_cadence"]
-    ck("control cadence empty for WIF and JUP (no wash bot to alternate), and the post says so",
+    ck("control cadence empty by construction, and the post frames it as such (not as evidence)",
        TC.get("WIF") == [] and TC.get("JUP") == []
-       and says("returns an empty result for both"))
+       and says("the cadence routine only examines wash-bot wallets, and the controls have none"))
 
     # the cadence/alternation is NOT claimed as the DN timeoftrade metric (which is second-of-minute)
     ck("the post does not map cadence to the DN timeoftrade metric",
        says("the dn `timeoftrade` is a second-of-minute histogram") and not says("cadence check is `timeoftrade`"))
+
+    # the balance rule min/max>=0.90 maps to buysellratioabs EXACTLY [0.4737, 0.5263]; the rounded
+    # "0.47 to 0.53" back-maps to min/max 0.887, so the post must give the exact band.
+    lo, hi = round((0.9 / 1.9), 4), round((1 / 0.9) / ((1 / 0.9) + 1), 4)
+    ck("metric mapping: min/max>=0.90 is buysellratioabs 0.4737 to 0.5263 (exact, not rounded 0.47-0.53)",
+       lo == 0.4737 and hi == 0.5263 and says("0.4737 and 0.5263"))
 
     nfail = sum(1 for _, ok in checks if not ok)
     print(f"\n{len(checks)} checks, {nfail} failed")

@@ -23,7 +23,7 @@ sells the same pool at least five times each and lands within 10% of flat. Organ
 contain none; the flagged pools are dominated by them. The bots:
 
 - buy and sell in matched size (QQQX's busiest wallet: bought $10,657, sold $10,695),
-- alternate buy/sell perfectly over dozens of swaps, the net position sawtoothing between zero and about $300 and returning to flat after each round trip,
+- alternate buy/sell perfectly over dozens of swaps, the running signed trade value sawtoothing between zero and about $300 and returning to near zero after each pair (the token position itself nets to a median 0.01%),
 - are coordinated where the funding says so: in TSLAX/Orca seven wallets form a creation chain - every wallet
   after the first created and seeded, ~500 USDT, by the one before it, the six seeds falling in
   steps of 4.3 to 4.6 USDT; three SPYX wallets run the same 7-and-7 buy/sell pattern for near-identical dollars; counting only its own
@@ -33,31 +33,32 @@ contain none; the flagged pools are dominated by them. The bots:
 - recur with full rotation: re-sampled six hours later, three of the five pools are again washed and not one bot reappears (`persistence.py`) - bursts by a rotating wallet fleet.
 
 Every named wallet, transaction, funding seed, and pool identity in this analysis was verified
-live against Solana RPC (all 14 wallets exist and are keypairs, not routers; every funding
-seed matches on-chain to the cent). The account-owner snapshot is committed in
+live against Solana RPC (all 14 wallets exist and are System-Program-owned accounts - wallets, not
+programs or routers; every funding seed matches on-chain to the cent). The account-owner snapshot is committed in
 `data/raw/wallet_owners.json`, so `analysis/verify.py` re-asserts it offline with every other claim.
 
-It is the pool, not the token: QQQX is flagged in one Raydium pool and clean in another;
-TSLAX is flagged on Orca and clean on Raydium. In the measured windows the bots round-tripped
+It is the pool, not the token: QQQX carries a sustained wash fleet in one Raydium pool and none in
+another of the same mint; TSLAX is flagged on Orca and below the flag on Raydium (the discriminator
+is the sustained fleet, since wash share is window-sensitive). In the measured windows the bots round-tripped
 $467k of self-cancelling buy-and-sell (a hard, directly-observed floor). A 24h figure is an
 extrapolation and the two natural methods disagree by about threefold in aggregate ($32M-$102M/day
 across the five pools), and by far more on an individual pool - widest on QQQX, where the share method
 implies $26M against under $1M from that pool's own observed bot rate. Both assume the snapshot
 behaviour persists, which the six-hour re-sample contradicts; the floor and the per-pool shares are the
-claims to rely on. Following the fourteen named wallets back through their history in the
-three xStocks the collector recognises (SPYX, TSLAX, QQQX) lifts the directly-observed matched
-total to $5.6M in 2,836 swaps (one wallet alone $2.9M) - more than ten times the in-window
-floor, and itself a floor since other xStocks are not counted - with each wallet's washing
+claims to rely on. Following the fourteen named wallets back through their history - classified against
+the seven xStock mints the collector knows, of which these wallets touch three (SPYX, TSLAX, QQQX) -
+lifts the two-sided matched total to $5.6M in 2,836 swaps (one wallet alone $2.9M) - more than ten
+times the in-window floor, and a floor itself since any xStock below the volume cutoff is not counted - with each wallet's washing
 concentrated in a burst of days, the rotating-fleet pattern again.
 
 The matched buy/sell capture no spread: the sells return about 99.3% of what the buys cost, a
-sub-1% loss to fees, and the tokens come back too (netting each bot's xStock units leaves a median
-0.01% of the units it turned over). It is not cross-pool arbitrage: no bot transaction buys
-in one pool and sells in another, while 38 transactions in the snapshot do exactly that, by other
-wallets. Their swaps are often aggregator-routed - 35% of bot volume sits in transactions that
-touch several pools, so a pool tape shows a leg, not a whole swap - but the wallet still signs and
-pays for its own trade, and each address is a plain keypair, not a router. An offsetting leg on a
-venue this data does not cover cannot be excluded.
+sub-1% net drain (fees plus spread plus any unclosed inventory), and the tokens come back too (netting
+each bot's xStock units leaves a median 0.01% of the units it turned over). It is not cross-pool arbitrage:
+no bot transaction buys in one pool and sells in another, while 38 transactions in the snapshot do exactly
+that, by other wallets. Their swaps are often aggregator-routed - 35% of bot volume sits in transactions that
+touch several pools, so a pool tape shows a leg, not a whole swap - but the tape records the wallet as its
+own trade's sender, and each address is System-Program-owned (a wallet, not a program or router). An
+offsetting leg on a venue this data does not cover cannot be excluded.
 Every claim is a named wallet and a transaction hash, checkable on [solscan.io](https://solscan.io).
 
 ## Reproduce
@@ -84,15 +85,15 @@ python analysis/fetch_raw.py     # reads the committed universe.json, applies th
 python analysis/fund_trace.py    # Solana RPC: wallet funding origins
 python analysis/trace_tree.py    # Solana RPC: walk the funding tree
 WH_HELIUS_KEY=...  python analysis/wallet_history.py   # Helius enhanced API: each bot's full swap history
-python analysis/owner_check.py   # Solana RPC: confirm each bot is a System-Program keypair (not a router)
+python analysis/owner_check.py   # Solana RPC: confirm each bot's account is System-Program-owned (a wallet, not a program/router)
 ```
 
 ## Data sources (all free)
 
 - Dexscreener API - pool universe, 24h volume, liquidity, turnover. (no key)
 - GeckoTerminal API - tx-level swaps (wallet, hash, side, USD) and OHLCV history. (no key)
-- Solana JSON-RPC (public endpoints) - wallet funding traces and account-owner checks (each bot is a System-Program keypair, not a router). (no key)
-- Helius enhanced-transactions API (free tier) - each named bot's swap history in the three recognised xStocks (SPYX, TSLAX, QQQX), used only for the lifetime totals in "The scale"; activity in lower-volume xStocks has no known mint and is not counted, so those totals are floors. The collected swaps are committed, so the totals recompute deterministically without a key.
+- Solana JSON-RPC (public endpoints) - wallet funding traces and account-owner checks (each bot's account is System-Program-owned, a wallet not a program/router). (no key)
+- Helius enhanced-transactions API (free tier) - each named bot's swap history, classified against the xStock mints that cleared the volume floor (seven symbols); these wallets touch three (SPYX, TSLAX, QQQX). Used only for the lifetime totals in "The scale"; activity in a lower-volume xStock has no tape and so no known mint and is not counted, so those totals are floors. The collected swaps are committed, so the totals recompute deterministically without a key.
 
 ## Layout
 
@@ -100,8 +101,8 @@ python analysis/owner_check.py   # Solana RPC: confirm each bot is a System-Prog
 analysis/     metrics_lib.py (detector) + screen / cluster / temporal / persistence / lifetime / named_wallets / verify / figures
               collectors (run once, network): fetch_raw / fund_trace / trace_tree / wallet_history / owner_check
 data/raw/     committed snapshot: trades/, ohlcv/, wallets/ (funding traces), wallet_swaps/ (histories), wallet_owners.json
-data/         universe.json, screen.csv, funding_edges.json, named_wallets.json
-*.json        screen / cluster / temporal / persistence / lifetime outputs
+data/         universe.json, screen.csv, lifetime.csv, funding_edges.json, named_wallets.json
+*.json        screen / cluster / temporal / persistence / lifetime / routing outputs
 post/         index.md (the wiki post) + figures
 dashboard/    build_dashboard.py -> index.html (GitHub Pages)
 tests/        pytest invariants

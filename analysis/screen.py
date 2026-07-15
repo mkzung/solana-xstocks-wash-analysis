@@ -192,9 +192,19 @@ def main():
     ax.axhline(flag, ls="--", color="#495057", lw=1, label=f"flag {flag} (above controls)")
     for i, r in enumerate(rows):
         ax.text(i, r["score"] + 0.01, f"{r['score']:.2f}", ha="center", fontsize=7)
+    # The two a-priori controls score exactly 0, so their green bars have no height and would vanish
+    # among the other zero-score pools. Mark them so the organic benchmark the flag sits above is
+    # actually locatable: a green tick on the baseline plus a green, bold axis label.
+    ctrl_idx = [i for i, r in enumerate(rows) if r["is_control"]]
+    ax.scatter(ctrl_idx, [0] * len(ctrl_idx), marker="^", s=70, color="#2f9e44",
+               zorder=5, clip_on=False, label="organic control (WIF, JUP; score 0)")
     ax.set_xticks(range(len(rows)))
     # include a short pool id so duplicate symbol/dex labels (e.g. three CRCLX/ray pools) are distinguishable
     ax.set_xticklabels([f'{r["symbol"]}/{r["dex"][:3]} {r["pool"][:4]}' for r in rows], rotation=90, fontsize=7)
+    for lab, r in zip(ax.get_xticklabels(), rows):
+        if r["is_control"]:
+            lab.set_color("#2f9e44")
+            lab.set_fontweight("bold")
     ax.set_ylabel("wash score  (USD share from balanced heavy round-trippers)")
     ax.set_ylim(0, 1.05)
     ax.set_title("Wash score for the on-chain xStock pools: five flag (orange); every organic control sits at zero", fontsize=11)
