@@ -23,7 +23,7 @@ sells the same pool at least five times each and lands within 10% of flat. Organ
 contain none; the flagged pools are dominated by them. The bots:
 
 - buy and sell in matched size (QQQX's busiest wallet: bought $10,657, sold $10,695),
-- alternate buy/sell perfectly over dozens of swaps, the running signed trade value sawtoothing between zero and about $300 and returning to near zero after each pair (the token position itself nets to a median 0.01%),
+- alternate buy/sell perfectly over dozens of swaps, the running signed trade value sawtoothing between zero and about $300 and returning to near zero after each pair (the tokens come back too - a fleet median 0.01% of the units turned over, 0.18% for this QQQX wallet),
 - are coordinated where the funding says so: in TSLAX/Orca seven wallets form a creation chain - every wallet
   after the first created and seeded, ~500 USDT, by the one before it, the six seeds falling in
   steps of 4.3 to 4.6 USDT; three SPYX wallets run the same 7-and-7 buy/sell pattern for near-identical dollars; counting only its own
@@ -33,7 +33,7 @@ contain none; the flagged pools are dominated by them. The bots:
 - recur with full rotation: re-sampled six hours later, three of the five pools are again washed and not one bot reappears (`persistence.py`) - bursts by a rotating wallet fleet.
 
 Every named wallet, transaction, funding seed, and pool identity in this analysis was verified
-live against Solana RPC (all 14 wallets exist and are System-Program-owned accounts - wallets, not
+live against Solana RPC (all 14 wallets exist and are System-Program-owned accounts, not
 programs or routers; every funding seed matches on-chain to the cent). The account-owner snapshot is committed in
 `data/raw/wallet_owners.json`, so `analysis/verify.py` re-asserts it offline with every other claim.
 
@@ -57,7 +57,7 @@ each bot's xStock units leaves a median 0.01% of the units it turned over). It i
 no bot transaction buys in one pool and sells in another, while 38 transactions in the snapshot do exactly
 that, by other wallets. Their swaps are often aggregator-routed - 35% of bot volume sits in transactions that
 touch several pools, so a pool tape shows a leg, not a whole swap - but the tape records the wallet as its
-own trade's sender, and each address is System-Program-owned (a wallet, not a program or router). An
+own trade's sender, and each address is System-Program-owned (not a program or router). An
 offsetting leg on a venue this data does not cover cannot be excluded.
 Every claim is a named wallet and a transaction hash, checkable on [solscan.io](https://solscan.io).
 
@@ -85,14 +85,14 @@ python analysis/fetch_raw.py     # reads the committed universe.json, applies th
 python analysis/fund_trace.py    # Solana RPC: wallet funding origins
 python analysis/trace_tree.py    # Solana RPC: walk the funding tree
 WH_HELIUS_KEY=...  python analysis/wallet_history.py   # Helius enhanced API: each bot's full swap history
-python analysis/owner_check.py   # Solana RPC: confirm each bot's account is System-Program-owned (a wallet, not a program/router)
+python analysis/owner_check.py   # Solana RPC: confirm each bot's account is System-Program-owned (not a program/router)
 ```
 
 ## Data sources (all free)
 
 - Dexscreener API - pool universe, 24h volume, liquidity, turnover. (no key)
 - GeckoTerminal API - tx-level swaps (wallet, hash, side, USD) and OHLCV history. (no key)
-- Solana JSON-RPC (public endpoints) - wallet funding traces and account-owner checks (each bot's account is System-Program-owned, a wallet not a program/router). (no key)
+- Solana JSON-RPC (public endpoints) - wallet funding traces and account-owner checks (each bot's account is System-Program-owned, not a program/router). (no key)
 - Helius enhanced-transactions API (free tier) - each named bot's swap history, classified against the xStock mints that cleared the volume floor (seven symbols); these wallets touch three (SPYX, TSLAX, QQQX). Used only for the lifetime totals in "The scale"; activity in a lower-volume xStock has no tape and so no known mint and is not counted, so those totals are floors. The collected swaps are committed, so the totals recompute deterministically without a key.
 
 ## Layout

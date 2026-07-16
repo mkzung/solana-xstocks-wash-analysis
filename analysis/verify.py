@@ -722,6 +722,12 @@ def main():
        and any(4.0 <= c["median_gap_s"] <= 5.0 for k, p in T["pools"].items() if k.startswith("TSLAX") for c in p["cadence"])
        and says("median 17 seconds") and says("4 to 5 second"))
 
+    # 2026-07-15 Copilot: the cadence caption/body must report C6FyA84D's OWN token residual (0.18%),
+    # not the fleet median (0.01%) - routing.json distinguishes them.
+    ck("cadence caption reports C6FyA84D's own token residual 0.18%, fleet median 0.01% labelled",
+       round(R["token_flatness"]["per_bot"]["C6FyA84D/QQQX"] * 100, 2) == 0.18
+       and says("0.18% of the qqqx units this wallet turned over") and says("the fleet median is 0.01%"))
+
     nfail = sum(1 for _, ok in checks if not ok)
     print(f"\n{len(checks)} checks, {nfail} failed")
     if nfail:
