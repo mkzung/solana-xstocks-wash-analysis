@@ -525,8 +525,10 @@ def main():
     known.update(r["wallet"] for r in read_json(os.path.join(ROOT, "data", "named_wallets.json")))
     # the post can cite pools the volume floor excluded
     known.update(read_json(os.path.join(ROOT, "data", "universe.json")).keys())
-    # strip the pin links first: a hex SHA is very nearly base58
+    # strip the pin links first: a git SHA is 40 hex chars and can be base58-clean
+    # (no 0/O/I/l), so a bare `git checkout <sha>` would otherwise read as a wallet
     body = re.sub(r"https://github\.com/\S+", "", post)
+    body = re.sub(r"\b[0-9a-f]{40}\b", "", body)
     addrs = set(re.findall(r"[1-9A-HJ-NP-Za-km-z]{32,44}", body))
     orphans = sorted(addrs - known)
     ck(f"every full address in the post ({len(addrs)}), linked or not, exists in the committed data",
