@@ -2,7 +2,7 @@
 
   signature.png     buy$ vs sell$ per wallet: wash bots sit on the diagonal, organic off
   cadence.png       a named bot's perfect buy/sell alternation and flat net position
-  funding.png       the TSLAX creation/peel chain with stablecoin seeds
+  funding.png       the TSLAX creation/peel chain with stepped seeds
   manufactured.png  reported vs manufactured 24h volume per flagged pool
 """
 import os
@@ -133,7 +133,7 @@ def fig_funding():
                     arrowprops=dict(arrowstyle="-|>", color="#495057", lw=1.6))
         s = seeds[i + 1]
         if s:
-            ax.text(i + 0.5, 0.12, f"{s:.2f}\nUSDT", ha="center", va="bottom", fontsize=8, color="#495057")
+            ax.text(i + 0.5, 0.12, f"{s:.2f}", ha="center", va="bottom", fontsize=8, color="#495057")
     for i, n in enumerate(nodes):
         ax.text(i, -0.18, n[:6] + "..", ha="center", va="top", fontsize=8, family="monospace")
     ax.text(0, 0.30, "top of traced chain", ha="center", fontsize=8, color="#495057")
@@ -142,7 +142,7 @@ def fig_funding():
                           "orange: wash bot in TSLAX/Orca", fontsize=8, color="#495057")
     ax.set_ylim(-0.6, 0.6); ax.set_xlim(-0.5, len(nodes) - 0.5); ax.axis("off")
     ax.set_title("TSLAX/Orca wash fleet: a peel chain, every wallet after the first created and seeded by the one before it\n"
-                 "(seeds fall in steps of 4.3 to 4.6 USDT - automated sequential deployment)", fontsize=10.5)
+                 "(seeds fall in steps of 4.3 to 4.6 - automated sequential deployment)", fontsize=10.5)
     fig.tight_layout()
     fig.savefig(os.path.join(POST, "funding.png"), dpi=120, metadata=PNG_META); plt.close()
 

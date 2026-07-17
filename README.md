@@ -25,8 +25,8 @@ contain none; the flagged pools are dominated by them. The bots:
 - buy and sell in matched size (QQQX's busiest wallet: bought $10,657, sold $10,695),
 - alternate buy/sell perfectly over dozens of swaps, the running signed trade value sawtoothing between zero and about $300 and returning to near zero after each pair (the tokens come back too - a fleet median 0.01% of the units turned over, 0.18% for this QQQX wallet),
 - are coordinated where the funding says so: in TSLAX/Orca seven wallets form a creation chain - every wallet
-  after the first created and seeded, ~500 USDT, by the one before it, the six seeds falling in
-  steps of 4.3 to 4.6 USDT; three SPYX wallets run the same 7-and-7 buy/sell pattern for near-identical dollars; counting only its own
+  after the first created and seeded by the one before it, the six seeds near a constant 500 and falling in
+  steps of 4.3 to 4.6 (the trace records the seed amount, not the mint); three SPYX wallets run the same 7-and-7 buy/sell pattern for near-identical dollars; counting only its own
   transactions rather than the legs of routed swaps, one wallet round-trips SPYX in all three of
   its pools,
 - predate the pools - a mix of aged wallets (some on-chain since 2025-10, with no xStock activity until recently) and same-day creations; funding wallets back to 2024-12,
@@ -34,12 +34,12 @@ contain none; the flagged pools are dominated by them. The bots:
 
 Every named wallet, transaction, funding seed, and pool identity in this analysis was verified
 live against Solana RPC (all 14 wallets exist and are System-Program-owned accounts, not
-programs or routers; every funding seed matches on-chain to the cent). The account-owner snapshot is committed in
+programs or routers; every funding seed matches the on-chain transfer amount). The account-owner snapshot is committed in
 `data/raw/wallet_owners.json`, so `analysis/verify.py` re-asserts it offline with every other claim.
 
 It is the pool, not the token: QQQX carries a sustained wash fleet in one Raydium pool and none in
 another of the same mint; TSLAX is flagged on Orca and below the flag on Raydium (the discriminator
-is the sustained fleet, since wash share is window-sensitive). In the measured windows the bots round-tripped
+is the sustained fleet, since wash share is window-sensitive). In the measured windows the bots matched
 $467k of self-cancelling buy-and-sell (a hard, directly-observed floor). A 24h figure is an
 extrapolation and the two natural methods disagree by about threefold in aggregate ($32M-$102M/day
 across the five pools), and by far more on an individual pool - widest on QQQX, where the share method

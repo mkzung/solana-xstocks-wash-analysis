@@ -259,8 +259,14 @@ def main():
     # the near-constant step is the "automated deployment" claim, so pin the range the post quotes
     ordered = sorted(seeds_expected.values(), reverse=True)
     steps = [round(a - b, 2) for a, b in zip(ordered, ordered[1:])]
-    ck("seed steps really are near-constant (4.3 to 4.6 USDT, as the post says)",
-       all(4.3 <= s <= 4.6 for s in steps) and "4.3 to 4.6 USDT" in post)
+    # seed_token is unresolved ('?') in every committed chain trace, so the post gives the seeds as
+    # amounts and names no mint (Copilot #1189 20:22 line 91: the pinned data does not substantiate
+    # "USDT"); the cross-surface anti-regression is in the withdrawn list below.
+    chain_seed_tokens = [read_json(glob.glob(os.path.join(RAWW, p + "*.json"))[0]).get("seed_token")
+                         for p in seeds_expected if glob.glob(os.path.join(RAWW, p + "*.json"))]
+    ck("seed steps near-constant (4.3 to 4.6); committed seed_token unresolved, post names no mint",
+       all(4.3 <= s <= 4.6 for s in steps) and "4.3 to 4.6" in post
+       and bool(chain_seed_tokens) and all(t == "?" for t in chain_seed_tokens))
 
     # the post says the chain stops at the top wallet because the tracer walks SIX levels and that
     # is where it sits - a claim about our own code, so read the cap out of the code and check that
@@ -569,7 +575,10 @@ def main():
                  "are the constants", "within each pool", "reaches a second pool",
                  # 2026-07-15 Copilot: some published histories exceed one 1000-sig page and the cited
                  # SPYX funders are depth-capped, so "one page / true first transaction" was false.
-                 "every history fits in one page", "fits in one page"]
+                 "every history fits in one page", "fits in one page",
+                 # 2026-07-16 Copilot #1189 line 91: committed seed_token is '?', so the mint is
+                 # unresolved; the seeds are amounts, never a named token.
+                 "500 USDT", "USDT token account", "4.3 to 4.6 USDT"]
     # strip the base64 images: 680kB of [A-Za-z0-9+/] would hit "fisher" by chance eventually
     surfaces = {name: re.sub(r"data:image/[a-z]+;base64,[A-Za-z0-9+/=]+", "",
                              read_text(os.path.join(ROOT, name)))
